@@ -17,10 +17,8 @@
         }
 
         .container {
-            position: relative;
-            width: 600px;
+            width: 100%;
             height: 600px;
-            transform-style: preserve-3d;
             perspective: 1000px;
         }
 
@@ -104,6 +102,123 @@
             position: absolute;
         }
 
+        /* Mobile View (Max Width: 768px) */
+
+@media (max-width: 768px) {
+
+.container {
+    width: 300px;
+    height: 400px; /* Adjust height for mobile */
+}
+
+.main-box {
+    width: 100px;
+    height: 140px;
+    top: 350px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: -20px;
+}
+
+.item {
+    width: 80px;
+    height: 20px;
+    font-size: 8px;
+    position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.8s ease-in-out, top 0.8s ease-in-out, left 0.8s ease-in-out;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.item.expand {
+    transform: scale(1.1);
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.highlight {
+    color: #6A5ACD;
+}
+
+.phone-icon {
+    top: 10px;
+    right: 10px;
+    width: 120px;
+    height: 35px;
+    font-size: 16px;
+}
+.image img{
+    width: 100px;
+    margin-top: 150px;
+}
+
+.dotted-circle {
+    width: 240px; /* Adjust the width */
+    height: 240px; /* Adjust the height */
+    border: 2px dotted #000;
+    border-radius: 50%; /* Ensure it's a complete circle */
+    margin-top: 150px;
+}
+
+}
+
+/* Desktop View (Min Width: 769px) */
+@media (min-width: 769px) {
+.container {
+    width: 600px;
+    height: 600px;
+}
+
+.main-box {
+    width: 150px;
+    height: 175px;
+    top: 470px;
+    left: 250px;
+    margin-top: -30px;
+}
+
+.item {
+    width: 200px;
+    height: 60px;
+    font-size: 14px;
+}
+
+.item.expand {
+    transform: scale(1.2);
+}
+
+.title {
+    font-size: 34px;
+    margin-bottom: 20px;
+}
+
+.highlight {
+    color: #6A5ACD;
+}
+
+.phone-icon {
+    top: 10px;
+    right: 10px;
+    width: 150px;
+    height: 40px;
+    font-size: 20px;
+}
+
+.dotted-circle {
+    width: 1200px;
+    height: 750px;
+    margin-top: -400px;
+}
+
+}
+
     </style>
 </head>
 <body>
@@ -134,7 +249,24 @@
         const mainBox = document.querySelector(".main-box");
         let previousChildIndex = 4;
         let rotationInProgress = false;  // Flag to check if rotation is happening
-        let positions = [
+        let positions;
+
+function setPositions() {
+    if (window.innerWidth <= 768) {
+        // Mobile-specific positions
+        positions = [
+            { top: 150, left: 50 },
+            { top: 200, left: 0 },
+            { top: 260, left: -10 },
+            { top: 320, left: 0 },
+            { top: 320, left: 220 },
+            { top: 250, left: 220 },
+            { top: 200, left: 210 },
+            { top: 150, left: 160 }
+        ];
+    } else {
+        // Desktop-specific positions
+        positions = [
             { top: 50, left: -450 },
             { top: 180, left: -400 },
             { top: 290, left: -250 },
@@ -144,11 +276,21 @@
             { top: 180, left: 800 },
             { top: 50, left: 850 }
         ];
+    }
+}
 
-        items.forEach((item, index) => {
-            item.style.top = positions[index].top + "px";
-            item.style.left = positions[index].left + "px";
-        });
+// Initialize positions based on screen size
+setPositions();
+
+// Listen for window resize and update positions dynamically
+window.addEventListener('resize', setPositions);
+
+// Apply the positions to the items
+items.forEach((item, index) => {
+    item.style.top = positions[index].top + "px";
+    item.style.left = positions[index].left + "px";
+});
+
 
         // Function to rotate items anti-clockwise
         function rotateItemsAntiClockwise(callback) {
