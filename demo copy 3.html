@@ -140,13 +140,13 @@
 
                 function rotateAndCheck() {
                     if (clickedIndex !== previousChildIndex) {
-                        // Check if the clicked index is in the first 4 (clockwise movement)
+                        // Check if the clicked index is in the first 4 (anti-clockwise movement)
                         if (clickedIndex < 4) {
-                            rotateItemsClockwise(() => {
+                            rotateItemsAntiClockwise(() => {
                                 rotateAndCheck();
                             });
                         } else {
-                            rotateItemsAntiClockwise(() => {
+                            rotateItemsClockwise(() => {
                                 rotateAndCheck();
                             });
                         }
