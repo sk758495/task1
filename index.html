@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Global Selling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: auto;
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            position: relative;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .highlight {
+            color: #6A5ACD;
+        }
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-top: 30px;
+        }
+
+        .step {
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            background-color: rgb(221, 223, 243);
+            
+        }
+        .step:nth-child(1) { top: -50px; left: 0; }
+        .step:nth-child(2) { top: 30px; left: 100px; }
+        .step:nth-child(3) { top: 120px; left: 240px; }
+        .step:nth-child(4) { top: 200px; left: 350px; }
+        .step:nth-child(5) { top: 200px; right: 350px; }
+        .step:nth-child(6) { top: 120px; right: 240px; }
+        .step:nth-child(7) { top: 30px; right: 100px; }
+        .step:nth-child(8) { top: -50px; right: 0; }
+        .line {
+            position: absolute;
+            width: 2px;
+            background: #6A5ACD;
+            height: 220px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20px;
+        }
+        .main-box {
+            background: #ffffff;
+            padding: 20px;
+            margin-top: 280px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            width: 280px;
+            text-align: center;
+            align-content: center;
+            justify-content: center;
+            margin-left: 650px;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #6A5ACD;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #5a4eb1;
+        }
+        .phone-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: #6A5ACD;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <img src="img/Final.png" alt="Background">
+    </div>
+    <div class="container">
+        <div class="phone-icon">📞</div>
+        <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div>
+        <img src="img/imazon.png" alt="Amazon Global Selling" width="200">
+        <div class="container-bg">
+        <div class="steps-container">
+            <div class="step">Instant e-FIRA</div>
+            <div class="step">Faster Payments</div>
+            <div class="step">Multi Currency Account</div>
+            <div class="step">Quick Onboarding</div>
+            <div class="step">Tax and Compliance Support</div>
+            <div class="step">Marketing</div>
+            <div class="step">Setup</div>
+            <div class="step">Logistics</div>
+        </div>
+        <div class="main-box">
+            <h3></h3>
+            <p></p>
+            <p></p>
+            <button class="button" onclick="showAlert()">See how we help you do that?</button>
+        </div>
+    </div>
+    </div>
+
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+    const steps = document.querySelectorAll(".step");
+    const mainBox = document.querySelector(".main-box");
+
+    steps.forEach(step => {
+        step.addEventListener("click", function () {
+            updateMainBox(step);
+        });
+    });
+
+    function updateMainBox(step) {
+        mainBox.innerHTML = `
+            <h3>${step.textContent}</h3>
+            <p>${getStepDetail(step.textContent)}</p>
+        `;
+    }
+
+    function getStepDetail(step) {
+        const details = {
+            "Instant e-FIRA": "Get your e-FIRA instantly to facilitate transactions.",
+            "Faster Payments": "Receive payments faster with our streamlined system.",
+            "Multi Currency Account": "Handle multiple currencies with ease.",
+            "Quick Onboarding": "Get started quickly with our simplified onboarding process.",
+            "Tax and Compliance Support": "Stay compliant with tax regulations effortlessly.",
+            "Marketing": "Boost your visibility with our tailored marketing strategies.",
+            "Setup": "Easily set up your Amazon store with our support.",
+            "Logistics": "Seamless shipping and fulfillment solutions."
+        };
+        return details[step] || "No details available.";
+    }
+});
+
+    </script>
+    <script>
+        function showAlert() {
+            alert("We help you with account management, product optimization, and sales boost!");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Amazon Global Selling Animation</title>
+<style>
+  .container {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    margin: 50px auto;
+    border-top: none;
+    border-radius: 0 0 400px 400px;
+    overflow: hidden;
+  }
+
+  .item {
+    position: absolute;
+    width: 150px;
+    height: 75px;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: top 0.5s ease-in-out, left 0.5s ease-in-out, background-color 0.3s ease;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .item.center {
+    background-color: #e0e0e0;
+    width: 100px;
+    height: 100px;
+  }
+
+  /* Initial positions */
+  .item:nth-child(1) { top: 30px; left: 60px; }
+  .item:nth-child(2) { top: 120px; left: 160px; }
+  .item:nth-child(3) { top: 250px; left: 100px; }
+  .item:nth-child(4) { top: 330px; left: 200px; }
+  .item:nth-child(5) { top: 380px; left: 350px; }
+  .item:nth-child(6) { top: 330px; left: 500px; }
+  .item:nth-child(7) { top: 250px; left: 600px; }
+  .item:nth-child(8) { top: 120px; left: 680px; }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="item">Instant e-FIRA</div>
+  <div class="item">Faster Payments</div>
+  <div class="item">Multi Currency Account</div>
+  <div class="item">Quick Onboarding</div>
+  <div class="item">Account Management Support</div>
+  <div class="item">Tax and Compliance Support</div>
+  <div class="item">Marketing</div>
+  <div class="item">Setup</div>
+</div>
+
+<script>
+  const container = document.querySelector('.container');
+  const items = Array.from(container.children);
+  let centerIndex = 4;
+
+  function updatePositions() {
+    const rotatingItems = items.filter((item, index) => index !== 4);
+    const newPositions = calculateNewPositions(rotatingItems.length);
+
+    rotatingItems.forEach((item, index) => {
+      animateItem(item, newPositions[index]);
+    });
+
+    items[4].classList.add('center');
+  }
+
+  function calculateNewPositions(count) {
+    const positions = [0, 1, 2, 3, 5, 6, 7];
+    const newPositions = [];
+
+    for (let i = 0; i < count; i++) {
+      newPositions.push(positions[(i - (centerIndex - 4) + count) % count]);
+    }
+
+    return newPositions;
+  }
+
+  function animateItem(item, newPosition) {
+    item.classList.remove('center');
+
+    let top, left;
+    switch (newPosition) {
+      case 0: top = 30; left = 60; break;
+      case 1: top = 120; left = 160; break;
+      case 2: top = 250; left = 100; break;
+      case 3: top = 330; left = 200; break;
+      case 5: top = 330; left = 500; break;
+      case 6: top = 250; left = 600; break;
+      case 7: top = 120; left = 680; break;
+    }
+
+    item.style.top = top + 'px';
+    item.style.left = left + 'px';
+  }
+
+  items.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      if (index !== 4) {
+        centerIndex = index;
+        updatePositions();
+      }
+    });
+  });
+
+  updatePositions();
+</script>
+
+</body>
+</html>

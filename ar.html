@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Circular Navigation with GSAP</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin: 100px auto;
+        }
+        .element {
+            position: absolute;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            padding: 10px 20px;
+            border-radius: 15px;
+            transition: all 0.5s ease;
+        }
+        .center-box {
+            position: absolute;
+            top: 80%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="circleContainer">
+        <div class="element" data-content="Instant e-FIRA">Instant e-FIRA</div>
+        <div class="element" data-content="Faster Payments">Faster Payments</div>
+        <div class="element" data-content="Multi Currency Account">Multi Currency Account</div>
+        <div class="element" data-content="Quick Onboarding">Quick Onboarding</div>
+        <div class="element" data-content="Tax and Compliance Support">Tax and Compliance Support</div>
+        <div class="element" data-content="Marketing">Marketing</div>
+        <div class="element" data-content="Setup">Setup</div>
+        <div class="element" data-content="Logistics">Logistics</div>
+
+        <div class="center-box" id="centerBox">
+            <h3>Account Management Support</h3>
+            <p>1. Personalized assistance to manage your Amazon and marketplace accounts.<br>
+               2. Optimize product listings, monitor store performance, and boost sales.</p>
+        </div>
+    </div>
+
+    <script>
+        const elements = document.querySelectorAll('.element');
+        const container = document.getElementById('circleContainer');
+        const centerBox = document.getElementById('centerBox');
+        const radius = 170;
+        const centerX = 250;
+        const centerY = 200;
+
+        let currentAngleOffset = 0;
+
+        function positionElements(angleOffset) {
+            elements.forEach((element, index) => {
+                const angle = (index / elements.length) * Math.PI * 2 + angleOffset;
+                const x = centerX + radius * Math.cos(angle) - element.offsetWidth / 2;
+                const y = centerY + radius * Math.sin(angle) - element.offsetHeight / 2;
+                gsap.to(element, { x: x, y: y, duration: 1 });
+            });
+        }
+
+        positionElements(currentAngleOffset);
+
+        elements.forEach(element => {
+            element.addEventListener('click', function () {
+                const content = element.getAttribute('data-content');
+                const clickedIndex = Array.from(elements).indexOf(element);
+                const targetIndex = 5; // Position near bottom (like Multi Currency Account)
+                const diff = clickedIndex - targetIndex;
+                const angleStep = (2 * Math.PI) / elements.length;
+                currentAngleOffset -= diff * angleStep;
+
+                positionElements(currentAngleOffset);
+
+                centerBox.innerHTML = `<h3>${content}</h3><p>Details about ${content}...</p>`;
+            });
+        });
+    </script>
+</body>
+</html>
