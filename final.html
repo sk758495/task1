@@ -152,14 +152,9 @@
                 }, 500);
 
                 function rotateAndCheck() {
-                    let minSteps = Math.abs(clickedIndex - previousChildIndex);
-                    if (minSteps === 0) {
-                        item.style.top = "470px";
-                        item.style.left = "250px";
-                        previousChildIndex = clickedIndex;
-                    } else {
-                        // Rotate based on the direction needed to get closer to the main box
-                        if (clickedIndex < previousChildIndex) {
+                    if (clickedIndex !== previousChildIndex) {
+                        // Check if the clicked index is in the first 4 (clockwise movement)
+                        if (clickedIndex < 4) {
                             rotateItemsAntiClockwise(() => {
                                 previousChildIndex = clickedIndex;
                             });
@@ -168,6 +163,10 @@
                                 previousChildIndex = clickedIndex;
                             });
                         }
+                    } else {
+                        item.style.top = "470px";
+                        item.style.left = "250px";
+                        previousChildIndex = clickedIndex;
                     }
                 }
                 rotateAndCheck();
