@@ -6,59 +6,58 @@
     <title>Rotational Animation</title>
     <style>
        body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-    margin: 0;
-}
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
 
-.container {
-    position: relative;
-    width: 600px;
-    height: 600px;
-    transform-style: preserve-3d;
-}
+        .container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            transform-style: preserve-3d;
+        }
 
-.main-box {
-    position: absolute;
-    top: 470px; /* Position changed to the bottom */
-    left: 250px;
-    width: 150px;
-    height: 75px;
-    background-color: #ffffff;
-    border: 2px solid #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-weight: bold;
-    transition: all 0.8s ease-in-out;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-}
+        .main-box {
+            position: absolute;
+            top: 470px; /* Position changed to the bottom */
+            left: 250px;
+            width: 150px;
+            height: 75px;
+            background-color: #ffffff;
+            border: 2px solid #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.8s ease-in-out;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
 
-.item {
-    position: absolute;
-    width: 120px;
-    height: 60px;
-    background-color: #dcdcff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.8s ease-in-out, top 1s ease-in-out, left 1s ease-in-out;
-    text-align: center;
-    font-size: 14px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .item {
+            position: absolute;
+            width: 120px;
+            height: 60px;
+            background-color: #dcdcff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 1s ease-in-out, top 1s ease-in-out, left 1s ease-in-out;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-.item.expand {
-    transform: scale(1.2); /* Expand the clicked item */
-}
-
+        .item.expand {
+            transform: scale(1.2); /* Expand the clicked item */
+        }
 
     </style>
 </head>
@@ -77,77 +76,78 @@
     </div>
 
     <script>
-      const items = document.querySelectorAll(".item");
-const mainBox = document.querySelector(".main-box");
-let previousChildIndex = 4;
-let positions = [
-    { top: 50, left: -450 },
-    { top: 120, left: -300 },
-    { top: 250, left: -150 },
-    { top: 400, left: 0 },
-    { top: 400, left: 500 },
-    { top: 300, left: 700 },
-    { top: 200, left: 850 },
-    { top: 50, left: 1000 }
-];
+     const items = document.querySelectorAll(".item");
+     const mainBox = document.querySelector(".main-box");
+     let previousChildIndex = 4;
+     let positions = [
+         { top: 50, left: -450 },
+         { top: 120, left: -300 },
+         { top: 250, left: -150 },
+         { top: 400, left: 0 },
+         { top: 400, left: 500 },
+         { top: 300, left: 700 },
+         { top: 200, left: 850 },
+         { top: 50, left: 1000 }
+     ];
 
-// Set initial positions of items
-items.forEach((item, index) => {
-    item.style.top = positions[index].top + "px";
-    item.style.left = positions[index].left + "px";
-});
+     // Set initial positions of items
+     items.forEach((item, index) => {
+         item.style.top = positions[index].top + "px";
+         item.style.left = positions[index].left + "px";
+     });
 
-// Function to rotate items clockwise
-function rotateItemsClockwise() {
-    const lastPosition = positions.pop();
-    positions.unshift(lastPosition);
+     // Function to rotate items clockwise
+     function rotateItemsClockwise() {
+         const lastPosition = positions.pop();
+         positions.unshift(lastPosition);
 
-    items.forEach((item, index) => {
-        item.style.top = positions[index].top + "px";
-        item.style.left = positions[index].left + "px";
-    });
-}
+         items.forEach((item, index) => {
+             item.style.top = positions[index].top + "px";
+             item.style.left = positions[index].left + "px";
+         });
+     }
 
-// Handle item click events
-items.forEach((item) => {
-    item.addEventListener("click", function () {
-        let clickedIndex = parseInt(this.getAttribute("data-index"));
+     // Handle item click events
+     items.forEach((item) => {
+         item.addEventListener("click", function () {
+             let clickedIndex = parseInt(this.getAttribute("data-index"));
 
-        if (clickedIndex === previousChildIndex) return;
+             if (clickedIndex === previousChildIndex) return;
 
-        // Store previous text in the main box
-        let previousText = mainBox.innerText;
-        mainBox.innerText = this.innerText;
+             // Store previous text in the main box
+             let previousText = mainBox.innerText;
+             mainBox.innerText = this.innerText;
 
-        // Update the text of the clicked item
-        let returningChild = document.querySelector(`[data-index="${previousChildIndex}"]`);
-        returningChild.innerText = previousText;
+             // Update the text of the clicked item
+             let returningChild = document.querySelector(`[data-index="${previousChildIndex}"]`);
+             returningChild.innerText = previousText;
 
-        // Add expand class to the clicked item
-        this.classList.add("expand");
-        setTimeout(() => {
-            this.classList.remove("expand");
-        }, 500); // Reset expand after animation
+             // Add expand class to the clicked item
+             this.classList.add("expand");
+             setTimeout(() => {
+                 this.classList.remove("expand");
+             }, 500); // Reset expand after animation
 
-        // Rotate clockwise until the clicked item reaches the previous position
-        while (clickedIndex !== previousChildIndex) {
-            rotateItemsClockwise();
-            clickedIndex = (clickedIndex - 1 + items.length) % items.length;
-        }
+             // Rotate clockwise until the clicked item reaches the previous position
+             while (clickedIndex !== previousChildIndex) {
+                 rotateItemsClockwise();
+                 clickedIndex = (clickedIndex - 1 + items.length) % items.length;
+             }
 
-        // Smoothly slide the clicked item to the center (470px vertical position)
-        this.style.top = "470px"; // Bottom position
-        this.style.left = "250px";
+             // Ensure smooth sliding to the center position
+             this.style.transition = "top 1s ease-in-out, left 1s ease-in-out"; // Add transition
+             this.style.top = "470px"; // Bottom position
+             this.style.left = "250px"; // Center position
 
-        // Optional: Add smooth animation for sliding effect
-        setTimeout(() => {
-            this.style.transition = "top 1s ease-in-out, left 1s ease-in-out";
-        }, 100); // Delay to ensure transition effect is applied correctly
+             // Optional: Add smooth animation for sliding effect
+             setTimeout(() => {
+                 this.style.transition = "top 1s ease-in-out, left 1s ease-in-out";
+             }, 100); // Delay to ensure transition effect is applied correctly
 
-        previousChildIndex = parseInt(this.getAttribute("data-index"));
-    });
-});
-
+             previousChildIndex = parseInt(this.getAttribute("data-index"));
+         });
+     });
     </script>
+
 </body>
 </html>
