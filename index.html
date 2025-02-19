@@ -3,191 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amazon Global Selling</title>
+    <title>Rotational Animation with Sliding Effect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
+        .slider {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
+            overflow: hidden;
+            background-image: url('img/Final2.png');
+            background-size: cover; /* Ensures the image covers the entire container */
+            background-position: center center; /* Centers the background image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
         }
+
         .container {
-            max-width: auto;
-            margin: auto;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            position: relative;
+            width: 100%;
+            height: 600px;
+            perspective: 1000px;
         }
+
+        .main-box {
+            position: absolute;
+            top: 470px;
+            left: 250px;
+            width: 150px;
+            height: 175px;
+            background-color: #ffffff;
+            border: 2px solid #000;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.8s ease-in-out;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            font-size: 16px;
+            padding: 10px;
+        }
+
+        .item {
+            position: absolute;
+            width: 200px;
+            height: 60px;
+            background-color: #dcdcff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.8s ease-in-out, top 0.8s ease-in-out, left 0.8s ease-in-out;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .item.expand {
+            transform: scale(1.2);
+        }
+        
         .title {
-            font-size: 24px;
+            font-size: 34px;
             font-weight: bold;
             color: #333;
         }
         .highlight {
             color: #6A5ACD;
         }
-        .steps-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            margin-top: 30px;
-        }
-
-        .step {
-            padding: 15px;
-            border-radius: 5px;
-            font-size: 14px;
-            width: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 30px;
-            background-color: rgb(221, 223, 243);
-            
-        }
-        .step:nth-child(1) { top: -50px; left: 0; }
-        .step:nth-child(2) { top: 30px; left: 100px; }
-        .step:nth-child(3) { top: 120px; left: 240px; }
-        .step:nth-child(4) { top: 200px; left: 350px; }
-        .step:nth-child(5) { top: 200px; right: 350px; }
-        .step:nth-child(6) { top: 120px; right: 240px; }
-        .step:nth-child(7) { top: 30px; right: 100px; }
-        .step:nth-child(8) { top: -50px; right: 0; }
-        .line {
-            position: absolute;
-            width: 2px;
-            background: #6A5ACD;
-            height: 220px;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 20px;
-        }
-        .main-box {
-            background: #ffffff;
-            padding: 20px;
-            margin-top: 280px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            width: 280px;
-            text-align: center;
-            align-content: center;
-            justify-content: center;
-            margin-left: 650px;
-        }
-        .button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #6A5ACD;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .button:hover {
-            background: #5a4eb1;
-        }
         .phone-icon {
             position: absolute;
             top: 10px;
             right: 10px;
-            width: 40px;
+            width: 150px;
             height: 40px;
             background: #6A5ACD;
-            border-radius: 50%;
             display: flex;
+            border-radius: 20px;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 20px;
             cursor: pointer;
         }
-        .background {
+
+        .dotted-circle {
+            width: 1200px;
+            height: 750px;
+            border: 2px dotted #000;
+            border-end-end-radius: 50% ;
+            border-end-start-radius: 50%;
+            border-left: 200px;
+            border-right: 200px;
+            border-top: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -400px;
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
         }
-        .background img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+
+        /* Mobile View (Max Width: 768px) */
+
+@media (max-width: 768px) {
+
+.container {
+    width: 300px;
+    height: 400px; /* Adjust height for mobile */
+}
+
+.main-box {
+    width: 100px;
+    height: 140px;
+    top: 350px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: -20px;
+}
+
+.item {
+    width: 80px;
+    height: 20px;
+    font-size: 8px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.8s ease-in-out, top 0.8s ease-in-out, left 0.8s ease-in-out;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.item.expand {
+    transform: scale(1.1);
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.highlight {
+    color: #6A5ACD;
+}
+
+.phone-icon {
+    top: 10px;
+    right: 10px;
+    width: 120px;
+    height: 35px;
+    font-size: 16px;
+}
+.image img{
+    width: 100px;
+    margin-top: 150px;
+}
+
+.dotted-circle {
+    width: 240px; /* Adjust the width */
+    height: 240px; /* Adjust the height */
+    border: 2px dotted #000;
+    border-radius: 50%; /* Ensure it's a complete circle */
+    margin-top: 150px;
+}
+
+}
+
+/* Desktop View (Min Width: 769px) */
+@media (min-width: 769px) {
+.container {
+    width: 600px;
+    height: 600px;
+}
+
+.main-box {
+    width: 150px;
+    height: 175px;
+    top: 470px;
+    left: 250px;
+    margin-top: -30px;
+}
+
+.item {
+    width: 200px;
+    height: 60px;
+    font-size: 14px;
+}
+
+.item.expand {
+    transform: scale(1.2);
+}
+
+.title {
+    font-size: 34px;
+    margin-bottom: 20px;
+}
+
+.highlight {
+    color: #6A5ACD;
+}
+
+.phone-icon {
+    top: 10px;
+    right: 10px;
+    width: 150px;
+    height: 40px;
+    font-size: 20px;
+}
+
+.dotted-circle {
+    width: 1200px;
+    height: 750px;
+    margin-top: -400px;
+}
+
+}
+
     </style>
 </head>
 <body>
-    <div class="background">
-        <img src="img/Final.png" alt="Background">
-    </div>
-    <div class="container">
-        <div class="phone-icon">📞</div>
+    <div class="slider">
+     <div class="dotted-circle"></div>
+
+    <div class="phone-icon"><i class="fa fa-arrow-right" style="background-color: white; color: #6A5ACD; border-radius: 50%; margin-right: 5px; padding: 3px; font-size: 10px;"></i>Get Started</div>
+    
+    <div class="container" style="text-align: center;">
+        <div class="image">
+                    
         <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div>
         <img src="img/imazon.png" alt="Amazon Global Selling" width="200">
-        <div class="container-bg">
-        <div class="steps-container">
-            <div class="step">Instant e-FIRA</div>
-            <div class="step">Faster Payments</div>
-            <div class="step">Multi Currency Account</div>
-            <div class="step">Quick Onboarding</div>
-            <div class="step">Tax and Compliance Support</div>
-            <div class="step">Marketing</div>
-            <div class="step">Setup</div>
-            <div class="step">Logistics</div>
         </div>
-        <div class="main-box">
-            <h3></h3>
-            <p></p>
-            <p></p>
-            <button class="button" onclick="showAlert()">See how we help you do that?</button>
-        </div>
+        <div class="item" data-index="0">Instant e-FIRA</div>
+        <div class="item" data-index="1">Faster Payments</div>
+        <div class="item" data-index="2">Multi Currency Account</div>
+        <div class="item" data-index="3">Quick Onboarding</div>
+        <div class="main-box">Account Management Support</div>
+        <div class="item" data-index="4">Tax and Compliance Support</div>
+        <div class="item" data-index="5">Marketing</div>
+        <div class="item" data-index="6">Setup</div>
+        <div class="item" data-index="7">Logistics</div>
     </div>
-    </div>
-
+</div>
     <script>
-       document.addEventListener("DOMContentLoaded", function () {
-    const steps = document.querySelectorAll(".step");
-    const mainBox = document.querySelector(".main-box");
+        const items = document.querySelectorAll(".item");
+        const mainBox = document.querySelector(".main-box");
+        let previousChildIndex = 4;
+        let rotationInProgress = false;  // Flag to check if rotation is happening
+        let positions;
 
-    steps.forEach(step => {
-        step.addEventListener("click", function () {
-            updateMainBox(step);
-        });
-    });
-
-    function updateMainBox(step) {
-        mainBox.innerHTML = `
-            <h3>${step.textContent}</h3>
-            <p>${getStepDetail(step.textContent)}</p>
-        `;
+function setPositions() {
+    if (window.innerWidth <= 768) {
+        // Mobile-specific positions
+        positions = [
+            { top: 150, left: 50 },
+            { top: 200, left: 0 },
+            { top: 260, left: -10 },
+            { top: 320, left: 0 },
+            { top: 320, left: 220 },
+            { top: 250, left: 220 },
+            { top: 200, left: 210 },
+            { top: 150, left: 160 }
+        ];
+    } else {
+        // Desktop-specific positions
+        positions = [
+            { top: 50, left: -450 },
+            { top: 180, left: -400 },
+            { top: 290, left: -250 },
+            { top: 400, left: 0 },
+            { top: 380, left: 440 },
+            { top: 300, left: 700 },
+            { top: 180, left: 800 },
+            { top: 50, left: 850 }
+        ];
     }
+}
 
-    function getStepDetail(step) {
-        const details = {
-            "Instant e-FIRA": "Get your e-FIRA instantly to facilitate transactions.",
-            "Faster Payments": "Receive payments faster with our streamlined system.",
-            "Multi Currency Account": "Handle multiple currencies with ease.",
-            "Quick Onboarding": "Get started quickly with our simplified onboarding process.",
-            "Tax and Compliance Support": "Stay compliant with tax regulations effortlessly.",
-            "Marketing": "Boost your visibility with our tailored marketing strategies.",
-            "Setup": "Easily set up your Amazon store with our support.",
-            "Logistics": "Seamless shipping and fulfillment solutions."
-        };
-        return details[step] || "No details available.";
-    }
+// Initialize positions based on screen size
+setPositions();
+
+// Listen for window resize and update positions dynamically
+window.addEventListener('resize', setPositions);
+
+// Apply the positions to the items
+items.forEach((item, index) => {
+    item.style.top = positions[index].top + "px";
+    item.style.left = positions[index].left + "px";
 });
 
-    </script>
-    <script>
-        function showAlert() {
-            alert("We help you with account management, product optimization, and sales boost!");
+
+        // Function to rotate items anti-clockwise
+        function rotateItemsAntiClockwise(callback) {
+            if (rotationInProgress) return;  // Prevent rotation if it's already in progress
+            rotationInProgress = true;
+
+            const firstPosition = positions.shift();
+            positions.push(firstPosition);
+
+            items.forEach((item, index) => {
+                item.style.top = positions[index].top + "px";
+                item.style.left = positions[index].left + "px";
+            });
+            setTimeout(() => {
+                rotationInProgress = false;
+                callback();  // Execute callback after rotation completes
+            }, 800);
         }
+
+        // Function to rotate items clockwise
+        function rotateItemsClockwise(callback) {
+            if (rotationInProgress) return;  // Prevent rotation if it's already in progress
+            rotationInProgress = true;
+
+            const lastPosition = positions.pop();
+            positions.unshift(lastPosition);
+
+            items.forEach((item, index) => {
+                item.style.top = positions[index].top + "px";
+                item.style.left = positions[index].left + "px";
+            });
+            setTimeout(() => {
+                rotationInProgress = false;
+                callback();  // Execute callback after rotation completes
+            }, 800);
+        }
+
+        items.forEach((item) => {
+            item.addEventListener("click", function () {
+                let clickedIndex = parseInt(this.getAttribute("data-index"));
+
+                if (clickedIndex === previousChildIndex || rotationInProgress) return;  // Prevent click if rotation is in progress
+
+                let previousText = mainBox.innerText;
+                mainBox.innerText = this.innerText;
+
+                let returningChild = document.querySelector(`[data-index="${previousChildIndex}"]`);
+                returningChild.innerText = previousText;
+
+                this.classList.add("expand");
+                setTimeout(() => {
+                    this.classList.remove("expand");
+                }, 500);
+
+                // Function to slide the item smoothly towards the main box
+                function slideToMainBox() {
+                    // Animate the clicked item to the center
+                    this.style.top = "470px";
+                    this.style.left = "250px";
+
+                    // Reset other items back to their original positions
+                    items.forEach((otherItem, index) => {
+                        if (index !== clickedIndex) {
+                            otherItem.style.top = positions[index].top + "px";
+                            otherItem.style.left = positions[index].left + "px";
+                        }
+                    });
+
+                    // Rotate the items based on the clicked index
+                    if (clickedIndex < previousChildIndex) {
+                        rotateItemsAntiClockwise(() => {
+                            previousChildIndex = clickedIndex;
+                        });
+                    } else {
+                        rotateItemsClockwise(() => {
+                            previousChildIndex = clickedIndex;
+                        });
+                    }
+                }
+
+                slideToMainBox.call(this);
+            });
+        });
     </script>
 </body>
 </html>
