@@ -5,44 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rotational Animation with Sliding Effect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <style>
-        body {
+        .slider {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f4f4f4;
             margin: 0;
             overflow: hidden;
+            background-image: url('img/Final2.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
         }
 
         .container {
-            position: relative;
-            width: 600px;
+            width: 100%;
             height: 600px;
-            transform-style: preserve-3d;
             perspective: 1000px;
-        }
-
-        .main-box {
-            position: absolute;
-            top: 470px;
-            left: 250px;
-            width: 150px;
-            height: 175px;
-            background-color: #ffffff;
-            border: 2px solid #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-weight: bold;
-            transition: all 0.8s ease-in-out;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-            margin-top: -30px;
         }
 
         .item {
@@ -54,7 +34,7 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.8s ease-in-out, top 0.8s ease-in-out, left 0.8s ease-in-out;
+            transition: all 0.8s ease-in-out;
             text-align: center;
             font-size: 14px;
             border-radius: 10px;
@@ -62,29 +42,24 @@
         }
 
         .item.expand {
-            transform: scale(1.2);
+            width: 220px;
+            height: 200px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #ffffff;
+            border: 2px solid black;
         }
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        .background img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+
         .title {
             font-size: 34px;
             font-weight: bold;
             color: #333;
         }
+
         .highlight {
             color: #6A5ACD;
         }
+
         .phone-icon {
             position: absolute;
             top: 10px;
@@ -100,134 +75,241 @@
             font-size: 20px;
             cursor: pointer;
         }
+
+        .dotted-circle {
+            width: 1200px;
+            height: 750px;
+            border: 2px dotted #000;
+            border-end-end-radius: 50%;
+            border-end-start-radius: 50%;
+            border-left: 200px;
+            border-right: 200px;
+            border-top: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -300px;
+            position: absolute;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 300px;
+                height: 400px;
+            }
+
+            .item {
+                width: 80px;
+                height: 20px;
+                font-size: 8px;
+            }
+
+            .item.expand {
+                width: 100px;
+                height: 100px;
+                font-size: 10px;
+                margin: 1200px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .dotted-circle {
+                width: 240px;
+                height: 240px;
+                margin-top: 150px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="slider">
-    <div class="background">
-        <img src="img/Final.png" alt="Background">
-    </div>
+        <div class="dotted-circle"></div>
 
-    <div class="phone-icon"><i class="fa fa-arrow-right" style="background-color: white; color: #6A5ACD; border-radius: 50%; margin-right: 5px; padding: 3px; font-size: 10px;"></i>Get Started</div>
-    <div class="container" style="text-align: center;">
-        <div class="image">
-        <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div>
-        <img src="img/imazon.png" alt="Amazon Global Selling" width="200">
+        <div class="phone-icon"><i class="fa fa-arrow-right" style="background-color: white; color: #6A5ACD; border-radius: 50%; margin-right: 5px; padding: 3px; font-size: 10px;"></i>Get Started</div>
+
+        <div class="container" style="text-align: center;">
+            <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div>
+            <img src="img/imazon.png" alt="Amazon Global Selling" width="200">
+
+            <div class="item" data-index="0">Instant e-FIRA</div>
+            <div class="item" data-index="1">Faster Payments</div>
+            <div class="item" data-index="2">Multi Currency Account</div>
+            <div class="item" data-index="3">Quick Onboarding</div>
+            <div class="item" data-index="4">Tax and Compliance Support</div>
+            <div class="item" data-index="5">Marketing</div>
+            <div class="item" data-index="6">Setup</div>
+            <div class="item" data-index="7">Logistics</div>
+            <div class="item" data-index="8">Help</div>
+
         </div>
-        <div class="item" data-index="0">Instant e-FIRA</div>
-        <div class="item" data-index="1">Faster Payments</div>
-        <div class="item" data-index="2">Multi Currency Account</div>
-        <div class="item" data-index="3">Quick Onboarding</div>
-        <div class="main-box">Account Management Support</div>
-        <div class="item" data-index="4">Tax and Compliance Support</div>
-        <div class="item" data-index="5">Marketing</div>
-        <div class="item" data-index="6">Setup</div>
-        <div class="item" data-index="7">Logistics</div>
     </div>
-</div>
+
     <script>
-        const items = document.querySelectorAll(".item");
-        const mainBox = document.querySelector(".main-box");
-        let previousChildIndex = 4;
-        let rotationInProgress = false;  // Flag to check if rotation is happening
-        let positions = [
-            { top: 50, left: -550 },
-            { top: 180, left: -450 },
-            { top: 290, left: -250 },
-            { top: 400, left: 0 },
-            { top: 380, left: 440 },
-            { top: 300, left: 700 },
-            { top: 180, left: 850 },
-            { top: 50, left: 950 }
+       const items = document.querySelectorAll(".item");
+let rotationInProgress = false;
+let positions;
+let selectedItem = null;
+let autoRotateInterval;
+let expandTimeout;
+
+function setPositions() {
+    if (window.innerWidth <= 768) {
+        positions = [
+            { top: 150, left: 50 },
+            { top: 200, left: 0 },
+            { top: 260, left: -10 },
+            { top: 320, left: 0 },
+            { top: 320, left: 220 },
+            { top: 250, left: 220 },
+            { top: 200, left: 210 },
+            { top: 150, left: 160 },
+            { top: 180, left: 110 }
         ];
+    } else {
+        positions = [
+            { top: 120, left: 140 },
+            { top: 240, left: 180 },
+            { top: 350, left: 250 },
+            { top: 450, left: 400 },
+            { top: 510, left: 700 },
+            { top: 450, left: 1000 },
+            { top: 350, left: 1150 },
+            { top: 240, left: 1300 },
+            { top: 120, left: 1350 }
+        ];
+    }
+}
 
-        items.forEach((item, index) => {
-            item.style.top = positions[index].top + "px";
-            item.style.left = positions[index].left + "px";
-        });
+setPositions();
+window.addEventListener('resize', setPositions);
 
-        // Function to rotate items anti-clockwise
-        function rotateItemsAntiClockwise(callback) {
-            if (rotationInProgress) return;  // Prevent rotation if it's already in progress
-            rotationInProgress = true;
+function applyPositions() {
+    items.forEach((item, index) => {
+        item.style.top = positions[index].top + "px";
+        item.style.left = positions[index].left + "px";
+    });
+}
 
-            const firstPosition = positions.shift();
-            positions.push(firstPosition);
+applyPositions();
 
-            items.forEach((item, index) => {
-                item.style.top = positions[index].top + "px";
-                item.style.left = positions[index].left + "px";
-            });
-            setTimeout(() => {
-                rotationInProgress = false;
-                callback();  // Execute callback after rotation completes
-            }, 800);
-        }
+function rotateItemsClockwise() {
+    if (rotationInProgress) return;
+    rotationInProgress = true;
 
-        // Function to rotate items clockwise
-        function rotateItemsClockwise(callback) {
-            if (rotationInProgress) return;  // Prevent rotation if it's already in progress
-            rotationInProgress = true;
+    const lastPosition = positions.pop();
+    positions.unshift(lastPosition);
 
-            const lastPosition = positions.pop();
-            positions.unshift(lastPosition);
+    items.forEach((item, index) => {
+        if (item !== selectedItem) {
+            const currentLeft = parseFloat(item.style.left);
+            const targetLeft = positions[index].left;
 
-            items.forEach((item, index) => {
-                item.style.top = positions[index].top + "px";
-                item.style.left = positions[index].left + "px";
-            });
-            setTimeout(() => {
-                rotationInProgress = false;
-                callback();  // Execute callback after rotation completes
-            }, 800);
-        }
+            const centerX = 700;
+            const isCrossingGap =
+                (currentLeft < centerX && targetLeft > centerX) ||
+                (currentLeft > centerX && targetLeft < centerX);
 
-        items.forEach((item) => {
-            item.addEventListener("click", function () {
-                let clickedIndex = parseInt(this.getAttribute("data-index"));
+            if (isCrossingGap) {
+                item.style.transition = 'opacity 0.3s ease-out';
+                item.style.opacity = "0";
 
-                if (clickedIndex === previousChildIndex || rotationInProgress) return;  // Prevent click if rotation is in progress
-
-                let previousText = mainBox.innerText;
-                mainBox.innerText = this.innerText;
-
-                let returningChild = document.querySelector(`[data-index="${previousChildIndex}"]`);
-                returningChild.innerText = previousText;
-
-                this.classList.add("expand");
                 setTimeout(() => {
-                    this.classList.remove("expand");
-                }, 500);
+                    item.style.transition = 'none';
+                    item.style.top = positions[index].top + "px";
+                    item.style.left = positions[index].left + "px";
 
-                // Function to slide the item smoothly towards the main box
-                function slideToMainBox() {
-                    // Animate the clicked item to the center
-                    this.style.top = "470px";
-                    this.style.left = "250px";
+                    setTimeout(() => {
+                        item.style.transition = 'opacity 0.3s ease-in';
+                        item.style.opacity = "1";
+                    }, 100);
+                }, 300);
+            } else {
+                item.style.transition = 'all 0.8s ease-in-out';
+                item.style.opacity = "1";
+                item.style.top = positions[index].top + "px";
+                item.style.left = positions[index].left + "px";
+            }
+        }
+    });
 
-                    // Reset other items back to their original positions
-                    items.forEach((otherItem, index) => {
-                        if (index !== clickedIndex) {
-                            otherItem.style.top = positions[index].top + "px";
-                            otherItem.style.left = positions[index].left + "px";
-                        }
-                    });
+    setTimeout(() => {
+        rotationInProgress = false;
+    }, 800);
+}
 
-                    // Rotate the items based on the clicked index
-                    if (clickedIndex < previousChildIndex) {
-                        rotateItemsAntiClockwise(() => {
-                            previousChildIndex = clickedIndex;
-                        });
-                    } else {
-                        rotateItemsClockwise(() => {
-                            previousChildIndex = clickedIndex;
-                        });
-                    }
-                }
+function expandItem(item) {
+    if (rotationInProgress) return;
 
-                slideToMainBox.call(this);
-            });
-        });
+    clearTimeout(expandTimeout);
+
+    if (selectedItem) {
+        selectedItem.classList.remove('expand');
+    }
+
+    selectedItem = item;
+
+    item.style.top = window.innerWidth <= 768 ? "350px" : "470px";
+    item.style.left = window.innerWidth <= 768 ? "50%" : "700px";
+    item.style.transform = window.innerWidth <= 768 ? "translateX(-50%)" : "none";
+    item.classList.add("expand");
+
+    expandTimeout = setTimeout(() => {
+        shrinkItem(item);
+        startAutoRotate();
+    }, 5000);
+}
+
+function shrinkItem(item) {
+    item.classList.remove("expand");
+    applyPositions();
+    selectedItem = null;
+}
+
+function startAutoRotate() {
+    clearInterval(autoRotateInterval);
+
+    autoRotateInterval = setInterval(() => {
+        if (rotationInProgress || selectedItem) return;
+
+        rotateItemsClockwise();
+    }, 3000);
+}
+
+function rotateToItemAndExpand(clickedItem) {
+    clearInterval(autoRotateInterval); // Pause auto rotation
+
+    const clickedIndex = parseInt(clickedItem.dataset.index);
+    const targetIndex = 4; // Index of the center position in positions array (position with left: 700)
+
+    function rotateAndCheck() {
+        if (rotationInProgress) return;
+
+        const currentCenterItem = Array.from(items).find(
+            (_, index) =>
+                parseInt(items[index].dataset.index) === clickedIndex &&
+                positions[index].left === 700
+        );
+
+        if (currentCenterItem) {
+            expandItem(clickedItem);
+        } else {
+            rotateItemsClockwise();
+            setTimeout(rotateAndCheck, 800);
+        }
+    }
+
+    rotateAndCheck();
+}
+
+items.forEach((item) => {
+    item.addEventListener("click", () => rotateToItemAndExpand(item));
+});
+
+startAutoRotate();
+
     </script>
+    
 </body>
 </html>

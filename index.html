@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rotational Animation with Sliding Effect</title>
+    <title>Rotational Animation with Expand</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .slider {
@@ -20,7 +20,7 @@
         }
 
         .container {
-            width: 100%;
+            width: 1700px;
             height: 600px;
             perspective: 1000px;
         }
@@ -60,22 +60,6 @@
             color: #6A5ACD;
         }
 
-        .phone-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 150px;
-            height: 40px;
-            background: #6A5ACD;
-            display: flex;
-            border-radius: 20px;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
         .dotted-circle {
             width: 1200px;
             height: 750px;
@@ -91,45 +75,13 @@
             margin-top: -300px;
             position: absolute;
         }
-
-        @media (max-width: 768px) {
-            .container {
-                width: 300px;
-                height: 400px;
-            }
-
-            .item {
-                width: 80px;
-                height: 20px;
-                font-size: 8px;
-            }
-
-            .item.expand {
-                width: 100px;
-                height: 100px;
-                font-size: 10px;
-                margin: 1200px;
-            }
-
-            .title {
-                font-size: 24px;
-            }
-
-            .dotted-circle {
-                width: 240px;
-                height: 240px;
-                margin-top: 150px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="slider">
         <div class="dotted-circle"></div>
 
-        <div class="phone-icon"><i class="fa fa-arrow-right" style="background-color: white; color: #6A5ACD; border-radius: 50%; margin-right: 5px; padding: 3px; font-size: 10px;"></i>Get Started</div>
-
-        <div class="container" style="text-align: center;">
+        <div class="container">
             <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div>
             <img src="img/imazon.png" alt="Amazon Global Selling" width="200">
 
@@ -142,168 +94,165 @@
             <div class="item" data-index="6">Setup</div>
             <div class="item" data-index="7">Logistics</div>
             <div class="item" data-index="8">Help</div>
-
         </div>
     </div>
 
+    <style>
+        .item {
+    position: absolute;
+    opacity: 1;
+    transition: opacity 0.8s ease-in-out; /* Smooth transition for opacity */
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+.fade-in {
+    opacity: 1;
+}
+
+    </style>
+    
     <script>
         const items = document.querySelectorAll(".item");
-        let rotationInProgress = false;
-        let positions;
-        let selectedItem = null;
-        let autoRotateInterval;
-        let expandTimeout;
-        let currentExpandIndex = 5; // Start from the first item in sequence
-    
-        function setPositions() {
-            if (window.innerWidth <= 768) {
-                positions = [
-                    { top: 150, left: 50 },
-                    { top: 200, left: 0 },
-                    { top: 260, left: -10 },
-                    { top: 320, left: 0 },
-                    { top: 320, left: 220 },
-                    { top: 250, left: 220 },
-                    { top: 200, left: 210 },
-                    { top: 150, left: 160 },
-                    { top: 180, left: 110 }
-                ];
-            } else {
-                positions = [
-                    { top: 120, left: 140 },
-                    { top: 240, left: 180 },
-                    { top: 350, left: 250 },
-                    { top: 450, left: 400 },
-                    { top: 510, left: 700 },
-                    { top: 450, left: 1000 },
-                    { top: 350, left: 1150 },
-                    { top: 240, left: 1300 },
-                    { top: 120, left: 1350 }
-                ];
-            }
-        }
-    
-        setPositions();
-        window.addEventListener('resize', setPositions);
-    
-        function applyPositions() {
-            items.forEach((item, index) => {
+let rotationInProgress = false;
+let positions;
+let selectedItem = null;
+let autoRotateInterval;
+let manualRotation = false;
+
+function setPositions() {
+    positions = [
+        { top: 120, left: 140 },
+        { top: 240, left: 180 },
+        { top: 350, left: 250 },
+        { top: 450, left: 400 },
+        { top: 510, left: 700 }, // Center position
+        { top: 450, left: 1000 },
+        { top: 350, left: 1150 },
+        { top: 240, left: 1300 },
+        { top: 120, left: 1350 }
+    ];
+}
+
+setPositions();
+
+function applyPositions() {
+    items.forEach((item, index) => {
+        item.style.top = positions[index].top + "px";
+        item.style.left = positions[index].left + "px";
+    });
+}
+
+applyPositions();
+
+function rotateItemsClockwise() {
+    if (rotationInProgress) return;
+    rotationInProgress = true;
+
+    const lastPosition = positions.pop();
+    positions.unshift(lastPosition);
+
+    items.forEach((item, index) => {
+        const currentLeft = parseFloat(item.style.left);
+        const targetLeft = positions[index].left;
+        
+        // Define center gap area
+        const centerX = 700; // Center point
+        const gapWidth = 300; // Width of gap area
+
+        // Check if item is crossing the center gap
+        const isCrossingGap = 
+            (currentLeft < centerX && targetLeft > centerX) || 
+            (currentLeft > centerX && targetLeft < centerX);
+
+        if (isCrossingGap) {
+            // First fade out
+            item.style.transition = 'opacity 0.3s ease-out';
+            item.style.opacity = "0";
+            
+            // Then move after fade out
+            setTimeout(() => {
+                item.style.transition = 'none';
                 item.style.top = positions[index].top + "px";
                 item.style.left = positions[index].left + "px";
-            });
-        }
-    
-        applyPositions();
-    
-        function rotateItemsClockwise() {
-            if (rotationInProgress) return;
-            rotationInProgress = true;
-    
-            const lastPosition = positions.pop();
-            positions.unshift(lastPosition);
-    
-            items.forEach((item, index) => {
-                if (item !== selectedItem) {
-                    const currentLeft = parseFloat(item.style.left);
-                    const targetLeft = positions[index].left;
-    
-                    const centerX = 700;
-                    const isCrossingGap =
-                        (currentLeft < centerX && targetLeft > centerX) ||
-                        (currentLeft > centerX && targetLeft < centerX);
-    
-                    if (isCrossingGap) {
-                        item.style.transition = 'opacity 0.3s ease-out';
-                        item.style.opacity = "0";
-    
-                        setTimeout(() => {
-                            item.style.transition = 'none';
-                            item.style.top = positions[index].top + "px";
-                            item.style.left = positions[index].left + "px";
-    
-                            setTimeout(() => {
-                                item.style.transition = 'opacity 0.3s ease-in';
-                                item.style.opacity = "1";
-                            }, 100);
-                        }, 300);
-                    } else {
-                        item.style.transition = 'all 0.8s ease-in-out';
-                        item.style.opacity = "1";
-                        item.style.top = positions[index].top + "px";
-                        item.style.left = positions[index].left + "px";
-                    }
-                }
-            });
-    
-            setTimeout(() => {
-                rotationInProgress = false;
-            }, 800);
-        }
-    
-        function expandItem(item) {
-            if (rotationInProgress) return;
-    
-            clearTimeout(expandTimeout);
-    
-            if (selectedItem) {
-                selectedItem.classList.remove('expand');
-            }
-    
-            selectedItem = item;
-    
-            item.style.top = window.innerWidth <= 768 ? "350px" : "470px";
-            item.style.left = window.innerWidth <= 768 ? "50%" : "700px";
-            item.style.transform = window.innerWidth <= 768 ? "translateX(-50%)" : "none";
-            item.classList.add("expand");
-    
-            // Hold the expanded item for 5 seconds, then shrink it and resume rotation
-            expandTimeout = setTimeout(() => {
-                shrinkItem(item);
-                startAutoRotate();
-            }, 5000);
-        }
-    
-        function shrinkItem(item) {
-            item.classList.remove("expand");
-            applyPositions();
-            selectedItem = null;
-        }
-    
-        function startAutoRotate() {
-            clearInterval(autoRotateInterval);
-    
-            autoRotateInterval = setInterval(() => {
-                if (rotationInProgress || selectedItem) return;
-    
-                rotateItemsClockwise();
-    
-                // Auto-expand the next item in sequence
+                
+                // Finally fade in at new position
                 setTimeout(() => {
-                    const nextItemToExpand = items[currentExpandIndex];
-                    expandItem(nextItemToExpand);
-    
-                    currentExpandIndex = (currentExpandIndex + 1) % items.length; // Loop back to 0
-                }, 800); // Expand after rotation completes
-            }, 3000); // Rotate every 3 seconds
+                    item.style.transition = 'opacity 0.3s ease-in';
+                    item.style.opacity = "1";
+                }, 100);
+            }, 300);
+        } else {
+            // Normal movement for items not crossing gap
+            item.style.transition = 'all 0.8s ease-in-out';
+            item.style.opacity = "1";
+            item.style.top = positions[index].top + "px";
+            item.style.left = positions[index].left + "px";
         }
-    
-        // Start auto rotation when the page loads
-        startAutoRotate();
-    
-        items.forEach((item) => {
-            item.addEventListener("click", function () {
-                if (rotationInProgress) return;
-    
-                if (selectedItem === this) {
-                    shrinkItem(this);
-                    startAutoRotate();
-                } else {
-                    clearInterval(autoRotateInterval);
-                    expandItem(this);
-                }
-            });
-        });
+    });
+
+    setTimeout(() => {
+        rotationInProgress = false;
+        if (!manualRotation) {
+            checkCenterItemExpansion();
+        }
+    }, 800);
+}
+
+function expandItem(item) {
+    items.forEach(el => el.classList.remove("expand")); // Collapse all
+    selectedItem = item;
+    item.classList.add("expand"); // Expand only selected item
+}
+
+function checkCenterItemExpansion() {
+    if (manualRotation) return; // Agar manually rotate ho raha hai to expand mat karo
+    const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+    if (centerItem && centerItem !== selectedItem) {
+        expandItem(centerItem);
+    }
+}
+
+function startAutoRotate() {
+    clearInterval(autoRotateInterval);
+    manualRotation = false;
+    autoRotateInterval = setInterval(() => {
+        if (!rotationInProgress) {
+            rotateItemsClockwise();
+        }
+    }, 3000);
+}
+
+function rotateToItemAndExpand(clickedItem) {
+    clearInterval(autoRotateInterval);
+    manualRotation = true; // Manually rotate kar rahe hain
+
+    // Collapse all items before rotation
+    items.forEach(el => el.classList.remove("expand"));
+
+    function rotateUntilCenter() {
+        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+        if (centerItem === clickedItem) {
+            expandItem(clickedItem);
+            manualRotation = false; // Manual rotation khatam
+        } else {
+            rotateItemsClockwise();
+            setTimeout(rotateUntilCenter, 800);
+        }
+    }
+
+    rotateUntilCenter();
+    setTimeout(startAutoRotate, 5000); // 5 sec ke baad auto-rotation wapas start ho
+}
+
+items.forEach((item) => {
+    item.addEventListener("click", () => rotateToItemAndExpand(item));
+});
+
+startAutoRotate();
+
     </script>
-    
 </body>
 </html>
