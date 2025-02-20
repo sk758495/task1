@@ -25,6 +25,12 @@
             perspective: 1000px;
         }
 
+        .container{
+            text-align: center;
+            justify-content: center;
+            align-content: center;
+        }
+
         .item {
             position: absolute;
             width: 200px;
@@ -205,6 +211,15 @@ function expandItem(item) {
     items.forEach(el => el.classList.remove("expand")); // Collapse all
     selectedItem = item;
     item.classList.add("expand"); // Expand only selected item
+
+    // Set transition for expanding
+    item.style.transition = 'all 0.2s ease-out'; 
+
+    // After expansion, collapse the item back in 0.5 seconds at the same position
+    setTimeout(() => {
+        item.style.transition = 'all 0.2s ease-in'; // Collapse with smooth transition
+        item.classList.remove("expand"); // Collapse the item
+    }, 2000); // Wait for 3 seconds before collapsing (you can adjust this time)
 }
 
 function checkCenterItemExpansion() {

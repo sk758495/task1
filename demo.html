@@ -250,13 +250,14 @@
 </div>
     <script>
         const items = document.querySelectorAll(".item");
-const mainBox = document.querySelector(".main-box");
-let previousChildIndex = 4;
-let rotationInProgress = false;
-let positions;
+        const mainBox = document.querySelector(".main-box");
+        let previousChildIndex = 4;
+        let rotationInProgress = false;  // Flag to check if rotation is happening
+        let positions;
 
 function setPositions() {
     if (window.innerWidth <= 768) {
+        // Mobile-specific positions
         positions = [
             { top: 150, left: 50 },
             { top: 200, left: 0 },
@@ -268,6 +269,7 @@ function setPositions() {
             { top: 150, left: 160 }
         ];
     } else {
+        // Desktop-specific positions
         positions = [
             { top: 50, left: -450 },
             { top: 180, left: -400 },
@@ -281,64 +283,101 @@ function setPositions() {
     }
 }
 
+// Initialize positions based on screen size
 setPositions();
 
+// Listen for window resize and update positions dynamically
 window.addEventListener('resize', setPositions);
 
+// Apply the positions to the items
 items.forEach((item, index) => {
     item.style.top = positions[index].top + "px";
     item.style.left = positions[index].left + "px";
 });
 
-function rotateItemsClockwise(callback) {
-    if (rotationInProgress) return;
-    rotationInProgress = true;
 
-    const lastPosition = positions.pop();
-    positions.unshift(lastPosition);
+        // Function to rotate items anti-clockwise
+        function rotateItemsAntiClockwise(callback) {
+            if (rotationInProgress) return;  // Prevent rotation if it's already in progress
+            rotationInProgress = true;
 
-    items.forEach((item, index) => {
-        item.style.top = positions[index].top + "px";
-        item.style.left = positions[index].left + "px";
-    });
+            const firstPosition = positions.shift();
+            positions.push(firstPosition);
 
-    setTimeout(() => {
-        rotationInProgress = false;
-        if (callback) callback();
-    }, 800);
-}
-
-items.forEach((item) => {
-    item.addEventListener("click", function () {
-        if (rotationInProgress) return;
-
-        const clickedIndex = parseInt(this.getAttribute("data-index"));
-        if (clickedIndex === previousChildIndex) return;
-
-        const previousText = mainBox.innerText;
-        mainBox.innerText = this.innerText;
-
-        const returningChild = document.querySelector(`[data-index="${previousChildIndex}"]`);
-        returningChild.innerText = previousText;
-
-        this.classList.add("expand");
-        setTimeout(() => {
-            this.classList.remove("expand");
-        }, 500);
-
-        function slideToMainBox() {
-            this.style.top = "470px";
-            this.style.left = "250px";
-
-            rotateItemsClockwise(() => {
-                previousChildIndex = clickedIndex;
+            items.forEach((item, index) => {
+                item.style.top = positions[index].top + "px";
+                item.style.left = positions[index].left + "px";
             });
+            setTimeout(() => {
+                rotationInProgress = false;
+                callback();  // Execute callback after rotation completes
+            }, 800);
         }
 
-        slideToMainBox.call(this);
-    });
-});
+        // Function to rotate items clockwise
+        function rotateItemsClockwise(callback) {
+            if (rotationInProgress) return;  // Prevent rotation if it's already in progress
+            rotationInProgress = true;
 
+            const lastPosition = positions.pop();
+            positions.unshift(lastPosition);
+
+            items.forEach((item, index) => {
+                item.style.top = positions[index].top + "px";
+                item.style.left = positions[index].left + "px";
+            });
+            setTimeout(() => {
+                rotationInProgress = false;
+                callback();  // Execute callback after rotation completes
+            }, 800);
+        }
+
+        items.forEach((item) => {
+            item.addEventListener("click", function () {
+                let clickedIndex = parseInt(this.getAttribute("data-index"));
+
+                if (clickedIndex === previousChildIndex || rotationInProgress) return;  // Prevent click if rotation is in progress
+
+                let previousText = mainBox.innerText;
+                mainBox.innerText = this.innerText;
+
+                let returningChild = document.querySelector(`[data-index="${previousChildIndex}"]`);
+                returningChild.innerText = previousText;
+
+                this.classList.add("expand");
+                setTimeout(() => {
+                    this.classList.remove("expand");
+                }, 500);
+
+                // Function to slide the item smoothly towards the main box
+                function slideToMainBox() {
+                    // Animate the clicked item to the center
+                    this.style.top = "470px";
+                    this.style.left = "250px";
+
+                    // Reset other items back to their original positions
+                    items.forEach((otherItem, index) => {
+                        if (index !== clickedIndex) {
+                            otherItem.style.top = positions[index].top + "px";
+                            otherItem.style.left = positions[index].left + "px";
+                        }
+                    });
+
+                    // Rotate the items based on the clicked index
+                    if (clickedIndex < previousChildIndex) {
+                        rotateItemsAntiClockwise(() => {
+                            previousChildIndex = clickedIndex;
+                        });
+                    } else {
+                        rotateItemsClockwise(() => {
+                            previousChildIndex = clickedIndex;
+                        });
+                    }
+                }
+
+                slideToMainBox.call(this);
+            });
+        });
     </script>
 </body>
 </html>
