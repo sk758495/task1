@@ -23,6 +23,9 @@
             width: 1700px;
             height: 600px;
             perspective: 1000px;
+            text-align: center;
+            justify-content: center;
+            align-content: center;
         }
 
         .item {
@@ -131,69 +134,45 @@
         applyPositions();
 
         function rotateItemsClockwise() {
-    if (rotationInProgress) return;
-    rotationInProgress = true;
+            if (rotationInProgress) return;
+            rotationInProgress = true;
 
-    const lastPosition = positions.pop();
-    positions.unshift(lastPosition);
+            const lastPosition = positions.pop();
+            positions.unshift(lastPosition);
+            applyPositions();
 
-    items.forEach((item, index) => {
-                if (item !== selectedItem) {
-                    const currentLeft = parseFloat(item.style.left);
-                    const targetLeft = positions[index].left;
-                    
-                    // Define center gap area
-                    const centerX = 700; // Center point
-                    const gapWidth = 300; // Width of gap area
-                    
-                    // Check if item is crossing the center gap
-                    const isCrossingGap = 
-                        (currentLeft < centerX && targetLeft > centerX) || 
-                        (currentLeft > centerX && targetLeft < centerX);
-
-                    if (isCrossingGap) {
-                        // First fade out
-                        item.style.transition = 'opacity 0.3s ease-out';
-                        item.style.opacity = "0";
-                        
-                        // Then move after fade out
-                        setTimeout(() => {
-                            item.style.transition = 'none';
-                            item.style.top = positions[index].top + "px";
-                            item.style.left = positions[index].left + "px";
-                            
-                            // Finally fade in at new position
-                            setTimeout(() => {
-                                item.style.transition = 'opacity 0.3s ease-in';
-                                item.style.opacity = "1";
-                            }, 100);
-                        }, 300);
-                    } else {
-                        // Normal movement for items not crossing gap
-                        item.style.transition = 'all 0.8s ease-in-out';
-                        item.style.opacity = "1";
-                        item.style.top = positions[index].top + "px";
-                        item.style.left = positions[index].left + "px";
-                    }
-                }
-            });
-    setTimeout(() => {
-        rotationInProgress = false;
-        if (!manualRotation) {
-            checkCenterItemExpansion();
+            setTimeout(() => {
+                rotationInProgress = false;
+                if (!manualRotation) checkCenterItemExpansion();
+            }, 800);
         }
-    }, 800);
-}
 
+        function rotateItemsAntiClockwise() {
+            if (rotationInProgress) return;
+            rotationInProgress = true;
+
+            const firstPosition = positions.shift();
+            positions.push(firstPosition);
+            applyPositions();
+
+            setTimeout(() => {
+                rotationInProgress = false;
+                if (!manualRotation) checkCenterItemExpansion();
+            }, 800);
+        }
 
         function expandItem(item) {
-            items.forEach(el => el.classList.remove("expand")); // Collapse all
+            items.forEach(el => el.classList.remove("expand"));
             selectedItem = item;
-            item.classList.add("expand"); // Expand only selected item
+            item.classList.add("expand");
+
+            setTimeout(() => {
+                item.classList.remove("expand");
+            }, 2000);
         }
 
         function checkCenterItemExpansion() {
-            if (manualRotation) return; // Agar manually rotate ho raha hai to expand mat karo
+            if (manualRotation) return;
             const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
             if (centerItem && centerItem !== selectedItem) {
                 expandItem(centerItem);
@@ -204,32 +183,38 @@
             clearInterval(autoRotateInterval);
             manualRotation = false;
             autoRotateInterval = setInterval(() => {
-                if (!rotationInProgress) {
-                    rotateItemsClockwise();
-                }
+                if (!rotationInProgress) rotateItemsClockwise();
             }, 3000);
         }
-        
+
         function rotateToItemAndExpand(clickedItem) {
             clearInterval(autoRotateInterval);
-            manualRotation = true; // Manually rotate kar rahe hain
+            manualRotation = true;
 
-            // Collapse all items before rotation
             items.forEach(el => el.classList.remove("expand"));
 
             function rotateUntilCenter() {
                 const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
                 if (centerItem === clickedItem) {
                     expandItem(clickedItem);
-                    manualRotation = false; // Manual rotation khatam
+                    manualRotation = false;
                 } else {
-                    rotateItemsClockwise();
+                    const clickedIndex = Array.from(items).indexOf(clickedItem);
+                    const clickedLeft = positions[clickedIndex].left;
+                    const centerX = 700;
+
+                    if (clickedLeft < centerX) {
+                        rotateItemsAntiClockwise();
+                    } else {
+                        rotateItemsClockwise();
+                    }
+
                     setTimeout(rotateUntilCenter, 800);
                 }
             }
 
             rotateUntilCenter();
-            setTimeout(startAutoRotate, 5000); // 5 sec ke baad auto-rotation wapas start ho
+            setTimeout(startAutoRotate, 5000);
         }
 
         items.forEach((item) => {
