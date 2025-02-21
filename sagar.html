@@ -23,6 +23,10 @@
             width: 1700px;
             height: 600px;
             perspective: 1000px;
+            transform-style: preserve-3d; /* This ensures items are 3D elements */
+        }
+
+        .container{
             text-align: center;
             justify-content: center;
             align-content: center;
@@ -100,128 +104,206 @@
         </div>
     </div>
 
+    <style>
+        .item {
+            position: absolute;
+            opacity: 1;
+            transition: opacity 0.8s ease-in-out; /* Smooth transition for opacity */
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+
+        .fade-in {
+            opacity: 1;
+        }
+    </style>
+    
     <script>
         const items = document.querySelectorAll(".item");
-        let rotationInProgress = false;
-        let positions;
-        let selectedItem = null;
-        let autoRotateInterval;
-        let manualRotation = false;
+let rotationInProgress = false;
+let positions;
+let selectedItem = null;
+let autoRotateInterval;
+let manualRotation = false;
 
-        function setPositions() {
-            positions = [
-                { top: 120, left: 140 },
-                { top: 240, left: 180 },
-                { top: 350, left: 250 },
-                { top: 450, left: 400 },
-                { top: 510, left: 700 }, // Center position
-                { top: 450, left: 1000 },
-                { top: 350, left: 1150 },
-                { top: 240, left: 1300 },
-                { top: 120, left: 1350 }
-            ];
+function setPositions() {
+    positions = [
+        { top: 120, left: 140 },
+        { top: 240, left: 180 },
+        { top: 350, left: 250 },
+        { top: 450, left: 400 },
+        { top: 510, left: 700 }, // Center position
+        { top: 450, left: 1000 },
+        { top: 350, left: 1150 },
+        { top: 240, left: 1300 },
+        { top: 120, left: 1350 }
+    ];
+}
+
+setPositions();
+
+function applyPositions() {
+    items.forEach((item, index) => {
+        item.style.top = positions[index].top + "px";
+        item.style.left = positions[index].left + "px";
+    });
+}
+
+applyPositions();
+
+function rotateItemsClockwise() {
+    if (rotationInProgress) return;
+    rotationInProgress = true;
+
+    const lastPosition = positions.pop();
+    positions.unshift(lastPosition);
+
+    items.forEach((item, index) => {
+        moveItemWithGapCheck(item, index);
+    });
+
+    setTimeout(() => {
+        rotationInProgress = false;
+        if (!manualRotation) {
+            checkCenterItemExpansion();
         }
+    }, 800);
+}
 
-        setPositions();
+function rotateItemsAntiClockwise() {
+    if (rotationInProgress) return;
+    rotationInProgress = true;
 
-        function applyPositions() {
-            items.forEach((item, index) => {
-                item.style.top = positions[index].top + "px";
-                item.style.left = positions[index].left + "px";
-            });
+    const firstPosition = positions.shift();
+    positions.push(firstPosition);
+
+    items.forEach((item, index) => {
+        moveItemWithGapCheck(item, index);
+    });
+
+    setTimeout(() => {
+        rotationInProgress = false;
+        if (!manualRotation) {
+            checkCenterItemExpansion();
         }
+    }, 800);
+}
 
-        applyPositions();
+function moveItemWithGapCheck(item, index) {
+    const currentLeft = parseFloat(item.style.left);
+    const targetLeft = positions[index].left;
 
-        function rotateItemsClockwise() {
-            if (rotationInProgress) return;
-            rotationInProgress = true;
+    const centerX = 700;
 
-            const lastPosition = positions.pop();
-            positions.unshift(lastPosition);
-            applyPositions();
+    const isCrossingGap =
+        (currentLeft < centerX && targetLeft > centerX) ||
+        (currentLeft > centerX && targetLeft < centerX);
+
+    if (isCrossingGap) {
+        item.style.transition = 'opacity 0.3s ease-out';
+        item.style.opacity = "0";
+
+        setTimeout(() => {
+            item.style.transition = 'none';
+            item.style.top = positions[index].top + "px";
+            item.style.left = positions[index].left + "px";
 
             setTimeout(() => {
-                rotationInProgress = false;
-                if (!manualRotation) checkCenterItemExpansion();
-            }, 800);
+                item.style.transition = 'opacity 0.3s ease-in';
+                item.style.opacity = "1";
+            }, 100);
+        }, 300);
+    } else {
+        item.style.transition = 'all 0.8s ease-in-out';
+        item.style.opacity = "1";
+        item.style.top = positions[index].top + "px";
+        item.style.left = positions[index].left + "px";
+    }
+}
+
+function expandItem(item) {
+    items.forEach(el => el.classList.remove("expand"));
+    selectedItem = item;
+    item.classList.add("expand");
+
+    item.style.transition = 'all 0.2s ease-out';
+
+    setTimeout(() => {
+        item.style.transition = 'all 0.2s ease-in';
+        item.classList.remove("expand");
+    }, 2000);
+}
+
+function checkCenterItemExpansion() {
+    if (manualRotation) return;
+    const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+    if (centerItem && centerItem !== selectedItem) {
+        expandItem(centerItem);
+    }
+}
+
+function startAutoRotate() {
+    clearInterval(autoRotateInterval);
+    manualRotation = false;
+    autoRotateInterval = setInterval(() => {
+        if (!rotationInProgress) {
+            rotateItemsClockwise();
         }
+    }, 3000);
+}
 
-        function rotateItemsAntiClockwise() {
-            if (rotationInProgress) return;
-            rotationInProgress = true;
+// ✅ Smooth Rotation on Click – Multi-Step at Once
+function rotateToItemAndExpand(clickedItem) {
+    clearInterval(autoRotateInterval);
+    manualRotation = true;
 
-            const firstPosition = positions.shift();
-            positions.push(firstPosition);
-            applyPositions();
+    items.forEach(el => el.classList.remove("expand"));
 
-            setTimeout(() => {
-                rotationInProgress = false;
-                if (!manualRotation) checkCenterItemExpansion();
-            }, 800);
-        }
+    const clickedIndex = Array.from(items).indexOf(clickedItem);
+    const centerIndex = positions.findIndex(pos => pos.left === 700);
 
-        function expandItem(item) {
-            items.forEach(el => el.classList.remove("expand"));
-            selectedItem = item;
-            item.classList.add("expand");
+    let steps = clickedIndex - centerIndex;
+    if (steps < 0) steps += positions.length;
 
-            setTimeout(() => {
-                item.classList.remove("expand");
-            }, 2000);
-        }
-
-        function checkCenterItemExpansion() {
-            if (manualRotation) return;
-            const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
-            if (centerItem && centerItem !== selectedItem) {
-                expandItem(centerItem);
-            }
-        }
-
-        function startAutoRotate() {
-            clearInterval(autoRotateInterval);
-            manualRotation = false;
-            autoRotateInterval = setInterval(() => {
-                if (!rotationInProgress) rotateItemsClockwise();
-            }, 3000);
-        }
-
-        function rotateToItemAndExpand(clickedItem) {
-            clearInterval(autoRotateInterval);
-            manualRotation = true;
-
-            items.forEach(el => el.classList.remove("expand"));
-
-            function rotateUntilCenter() {
-                const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
-                if (centerItem === clickedItem) {
-                    expandItem(clickedItem);
-                    manualRotation = false;
-                } else {
-                    const clickedIndex = Array.from(items).indexOf(clickedItem);
-                    const clickedLeft = positions[clickedIndex].left;
-                    const centerX = 700;
-
-                    if (clickedLeft < centerX) {
-                        rotateItemsAntiClockwise();
-                    } else {
-                        rotateItemsClockwise();
-                    }
-
-                    setTimeout(rotateUntilCenter, 800);
-                }
-            }
-
-            rotateUntilCenter();
-            setTimeout(startAutoRotate, 5000);
-        }
-
-        items.forEach((item) => {
-            item.addEventListener("click", () => rotateToItemAndExpand(item));
-        });
-
+    if (steps === 0) {
+        expandItem(clickedItem);
+        manualRotation = false;
         startAutoRotate();
+        return;
+    }
+
+    rotationInProgress = true;
+
+    // Shift positions logically in one go
+    for (let i = 0; i < steps; i++) {
+        const firstPosition = positions.shift();
+        positions.push(firstPosition);
+    }
+
+    const duration = steps * 400; // Smooth animation based on steps
+
+    items.forEach((item, index) => {
+        item.style.transition = `all ${duration}ms ease-in-out`;
+        item.style.top = positions[index].top + "px";
+        item.style.left = positions[index].left + "px";
+    });
+
+    setTimeout(() => {
+        rotationInProgress = false;
+        expandItem(clickedItem);
+        manualRotation = false;
+        startAutoRotate();
+    }, duration);
+}
+
+items.forEach((item) => {
+    item.addEventListener("click", () => rotateToItemAndExpand(item));
+});
+
+startAutoRotate();
+
     </script>
 </body>
 </html>

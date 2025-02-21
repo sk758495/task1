@@ -23,6 +23,13 @@
             width: 1700px;
             height: 600px;
             perspective: 1000px;
+            transform-style: preserve-3d; /* This ensures items are 3D elements */
+        }
+
+        .container{
+            text-align: center;
+            justify-content: center;
+            align-content: center;
         }
 
         .item {
@@ -59,22 +66,6 @@
         .highlight {
             color: #6A5ACD;
         }
-		
-		.phone-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 150px;
-            height: 40px;
-            background: #6A5ACD;
-            display: flex;
-            border-radius: 20px;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
 
         .dotted-circle {
             width: 1200px;
@@ -91,43 +82,11 @@
             margin-top: -300px;
             position: absolute;
         }
-		
-		@media (max-width: 768px) {
-            .container {
-                width: 300px;
-                height: 400px;
-            }
-
-            .item {
-                width: 80px;
-                height: 20px;
-                font-size: 8px;
-            }
-
-            .item.expand {
-                width: 100px;
-                height: 100px;
-                font-size: 10px;
-                margin: 1200px;
-            }
-
-            .title {
-                font-size: 24px;
-            }
-
-            .dotted-circle {
-                width: 240px;
-                height: 240px;
-                margin-top: 150px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="slider">
         <div class="dotted-circle"></div>
-
-		<div class="phone-icon"><i class="fa fa-arrow-right" style="background-color: white; color: #6A5ACD; border-radius: 50%; margin-right: 5px; padding: 3px; font-size: 10px;"></i>Get Started</div>
 
         <div class="container">
             <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div>
@@ -145,46 +104,45 @@
         </div>
     </div>
 
+    <style>
+        .item {
+            position: absolute;
+            opacity: 1;
+            transition: opacity 0.8s ease-in-out; /* Smooth transition for opacity */
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+
+        .fade-in {
+            opacity: 1;
+        }
+    </style>
+    
     <script>
         const items = document.querySelectorAll(".item");
         let rotationInProgress = false;
         let positions;
         let selectedItem = null;
         let autoRotateInterval;
-       // let manualRotation = false;
-		let expandTimeout;
+        let manualRotation = false;
 
         function setPositions() {
-           if (window.innerWidth <= 768) {
-        positions = [
-            { top: 150, left: 50 },
-            { top: 200, left: 0 },
-            { top: 260, left: -10 },
-            { top: 320, left: 0 },
-            { top: 320, left: 220 },
-            { top: 250, left: 220 },
-            { top: 200, left: 210 },
-            { top: 150, left: 160 },
-            { top: 180, left: 110 }
-        ];
-    } else {
-        positions = [
-            { top: 120, left: 140 },
-            { top: 240, left: 180 },
-            { top: 350, left: 250 },
-            { top: 450, left: 400 },
-            { top: 510, left: 700 },
-            { top: 450, left: 1000 },
-            { top: 350, left: 1150 },
-            { top: 240, left: 1300 },
-            { top: 120, left: 1350 }
-        ];
-    }
+            positions = [
+                { top: 120, left: 140 },
+                { top: 240, left: 180 },
+                { top: 350, left: 250 },
+                { top: 450, left: 400 },
+                { top: 510, left: 700 }, // Center position
+                { top: 450, left: 1000 },
+                { top: 350, left: 1150 },
+                { top: 240, left: 1300 },
+                { top: 120, left: 1350 }
+            ];
         }
 
         setPositions();
-		window.addEventListener('resize', setPositions);
-
 
         function applyPositions() {
             items.forEach((item, index) => {
@@ -195,115 +153,161 @@
 
         applyPositions();
 
-		function rotateItemsClockwise() {
-			if (rotationInProgress) return;
-			rotationInProgress = true;
+        function rotateItemsClockwise() {
+            if (rotationInProgress) return;
+            rotationInProgress = true;
 
-			const lastPosition = positions.pop();
-			positions.unshift(lastPosition);
+            const lastPosition = positions.pop();
+            positions.unshift(lastPosition);
 
-			items.forEach((item, index) => {
-				if (item !== selectedItem) {
-					const currentLeft = parseFloat(item.style.left);
-					const targetLeft = positions[index].left;
+            items.forEach((item, index) => {
+                const currentLeft = parseFloat(item.style.left);
+                const targetLeft = positions[index].left;
 
-					const centerX = 700;
-					const isCrossingGap =
-						(currentLeft < centerX && targetLeft > centerX) ||
-						(currentLeft > centerX && targetLeft < centerX);
+                const centerX = 700; // Center point
+                const gapWidth = 300; // Width of gap area
 
-					if (isCrossingGap) {
-						item.style.transition = 'opacity 0.3s ease-out';
-						item.style.opacity = "0";
+                const isCrossingGap = 
+                    (currentLeft < centerX && targetLeft > centerX) || 
+                    (currentLeft > centerX && targetLeft < centerX);
 
-						setTimeout(() => {
-							item.style.transition = 'none';
-							item.style.top = positions[index].top + "px";
-							item.style.left = positions[index].left + "px";
+                if (isCrossingGap) {
+                    item.style.transition = 'opacity 0.3s ease-out';
+                    item.style.opacity = "0";
+                    
+                    setTimeout(() => {
+                        item.style.transition = 'none';
+                        item.style.top = positions[index].top + "px";
+                        item.style.left = positions[index].left + "px";
+                        
+                        setTimeout(() => {
+                            item.style.transition = 'opacity 0.3s ease-in';
+                            item.style.opacity = "1";
+                        }, 100);
+                    }, 300);
+                } else {
+                    item.style.transition = 'all 0.8s ease-in-out';
+                    item.style.opacity = "1";
+                    item.style.top = positions[index].top + "px";
+                    item.style.left = positions[index].left + "px";
+                }
+            });
 
-							setTimeout(() => {
-								item.style.transition = 'opacity 0.3s ease-in';
-								item.style.opacity = "1";
-							}, 100);
-						}, 300);
-					} else {
-						item.style.transition = 'all 0.8s ease-in-out';
-						item.style.opacity = "1";
-						item.style.top = positions[index].top + "px";
-						item.style.left = positions[index].left + "px";
-					}
-				}
-			});
-
-			setTimeout(() => {
-				rotationInProgress = false;
-			}, 800);
-}
-
-
-
-        function expandItem(item) {
-           if (rotationInProgress) return;
-
-			clearTimeout(expandTimeout);
-
-			if (selectedItem) {
-				selectedItem.classList.remove('expand');
-			}
-
-			selectedItem = item;
-
-			item.style.top = window.innerWidth <= 768 ? "350px" : "470px";
-			item.style.left = window.innerWidth <= 768 ? "50%" : "700px";
-			item.style.transform = window.innerWidth <= 768 ? "translateX(-50%)" : "none";
-			item.classList.add("expand");
-
-			expandTimeout = setTimeout(() => {
-				shrinkItem(item);
-				startAutoRotate();
-			}, 5000);
+            setTimeout(() => {
+                rotationInProgress = false;
+                if (!manualRotation) {
+                    checkCenterItemExpansion();
+                }
+            }, 800);
         }
 
-       function shrinkItem(item) {
-		item.classList.remove("expand");
-		applyPositions();
-		selectedItem = null;
-	}
+        function rotateItemsAntiClockwise() {
+            if (rotationInProgress) return;
+            rotationInProgress = true;
+
+            const firstPosition = positions.shift();
+            positions.push(firstPosition);
+
+            items.forEach((item, index) => {
+                const currentLeft = parseFloat(item.style.left);
+                const targetLeft = positions[index].left;
+
+                const centerX = 700; // Center point
+                const gapWidth = 300; // Width of gap area
+
+                const isCrossingGap = 
+                    (currentLeft < centerX && targetLeft > centerX) || 
+                    (currentLeft > centerX && targetLeft < centerX);
+
+                if (isCrossingGap) {
+                    item.style.transition = 'opacity 0.3s ease-out';
+                    item.style.opacity = "0";
+                    
+                    setTimeout(() => {
+                        item.style.transition = 'none';
+                        item.style.top = positions[index].top + "px";
+                        item.style.left = positions[index].left + "px";
+                        
+                        setTimeout(() => {
+                            item.style.transition = 'opacity 0.3s ease-in';
+                            item.style.opacity = "1";
+                        }, 100);
+                    }, 300);
+                } else {
+                    item.style.transition = 'all 0.8s ease-in-out';
+                    item.style.opacity = "1";
+                    item.style.top = positions[index].top + "px";
+                    item.style.left = positions[index].left + "px";
+                }
+            });
+
+            setTimeout(() => {
+                rotationInProgress = false;
+                if (!manualRotation) {
+                    checkCenterItemExpansion();
+                }
+            }, 800);
+        }
+
+        function expandItem(item) {
+            items.forEach(el => el.classList.remove("expand"));
+            selectedItem = item;
+            item.classList.add("expand");
+
+            item.style.transition = 'all 0.2s ease-out'; 
+
+            setTimeout(() => {
+                item.style.transition = 'all 0.2s ease-in'; 
+                item.classList.remove("expand");
+            }, 2000);
+        }
+
+        function checkCenterItemExpansion() {
+            if (manualRotation) return;
+            const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+            if (centerItem && centerItem !== selectedItem) {
+                expandItem(centerItem);
+            }
+        }
 
         function startAutoRotate() {
             clearInterval(autoRotateInterval);
-
-			autoRotateInterval = setInterval(() => {
-				if (rotationInProgress || selectedItem) return;
-
-				rotateItemsClockwise();
-			}, 3000);
+            manualRotation = false;
+            autoRotateInterval = setInterval(() => {
+                if (!rotationInProgress) {
+                    rotateItemsClockwise();
+                }
+            }, 3000);
         }
-        
+
         function rotateToItemAndExpand(clickedItem) {
-            clearInterval(autoRotateInterval); // Pause auto rotation
+            clearInterval(autoRotateInterval);
+            manualRotation = true;
 
-			const clickedIndex = parseInt(clickedItem.dataset.index);
-			const targetIndex = 4; // Index of the center position in positions array (position with left: 700)
+            items.forEach(el => el.classList.remove("expand"));
 
-			function rotateAndCheck() {
-				if (rotationInProgress) return;
+            function rotateUntilCenter() {
+                const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+                if (centerItem === clickedItem) {
+                    expandItem(clickedItem);
+                    manualRotation = false;
+                } else {
+                    const clickedIndex = Array.from(items).indexOf(clickedItem);
+                    const clickedLeft = positions[clickedIndex].left;
+                    const centerX = 700;
 
-				const currentCenterItem = Array.from(items).find(
-					(_, index) =>
-						parseInt(items[index].dataset.index) === clickedIndex &&
-						positions[index].left === 700
-				);
+                    if (clickedLeft < centerX) {
+                        rotateItemsAntiClockwise();
+                    } else {
+                        rotateItemsClockwise();
+                    }
 
-				if (currentCenterItem) {
-					expandItem(clickedItem);
-				} else {
-					rotateItemsClockwise();
-					setTimeout(rotateAndCheck, 800);
-				}
-			}
+                    setTimeout(rotateUntilCenter, 800);
+                }
+            }
 
-			rotateAndCheck();
+            rotateUntilCenter();
+            setTimeout(startAutoRotate, 5000); 
         }
 
         items.forEach((item) => {

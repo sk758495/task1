@@ -82,6 +82,19 @@
             margin-top: -300px;
             position: absolute;
         }
+        .item {
+            position: absolute;
+            opacity: 1;
+            transition: opacity 0.8s ease-in-out; /* Smooth transition for opacity */
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+
+        .fade-in {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -104,217 +117,253 @@
         </div>
     </div>
 
-    <style>
-        .item {
-            position: absolute;
-            opacity: 1;
-            transition: opacity 0.8s ease-in-out; /* Smooth transition for opacity */
-        }
-
-        .fade-out {
-            opacity: 0;
-        }
-
-        .fade-in {
-            opacity: 1;
-        }
-    </style>
-    
+        
     <script>
-        const items = document.querySelectorAll(".item");
-        let rotationInProgress = false;
-        let positions;
-        let selectedItem = null;
-        let autoRotateInterval;
-        let manualRotation = false;
+    // Select all elements with the class 'item' and store them in the 'items' variable.
+    const items = document.querySelectorAll(".item");
 
-        function setPositions() {
-            positions = [
-                { top: 120, left: 140 },
-                { top: 240, left: 180 },
-                { top: 350, left: 250 },
-                { top: 450, left: 400 },
-                { top: 510, left: 700 }, // Center position
-                { top: 450, left: 1000 },
-                { top: 350, left: 1150 },
-                { top: 240, left: 1300 },
-                { top: 120, left: 1350 }
-            ];
-        }
+    // Variable to track if rotation is in progress
+    let rotationInProgress = false;
 
-        setPositions();
+    // Variable to store positions of all items (top and left)
+    let positions;
 
-        function applyPositions() {
-            items.forEach((item, index) => {
-                item.style.top = positions[index].top + "px";
-                item.style.left = positions[index].left + "px";
-            });
-        }
+    // Variable to store the selected item when expanded
+    let selectedItem = null;
 
-        applyPositions();
+    // Variable to handle auto-rotation interval
+    let autoRotateInterval;
 
-        function rotateItemsClockwise() {
-            if (rotationInProgress) return;
-            rotationInProgress = true;
+    // Flag to track if the rotation is manual (via clicking) or auto
+    let manualRotation = false;
 
-            const lastPosition = positions.pop();
-            positions.unshift(lastPosition);
+    // Function to set initial positions of items
+    function setPositions() {
+        positions = [
+            { top: 120, left: 140 },   // Position for the first item
+            { top: 240, left: 180 },   // Position for the second item
+            { top: 350, left: 250 },   // Position for the third item
+            { top: 450, left: 400 },   // Position for the fourth item
+            { top: 510, left: 700 },   // Center position (this is where the middle item will be)
+            { top: 450, left: 1000 },  // Position for the sixth item
+            { top: 350, left: 1150 },  // Position for the seventh item
+            { top: 240, left: 1300 },  // Position for the eighth item
+            { top: 120, left: 1350 }   // Position for the ninth item
+        ];
+    }
 
-            items.forEach((item, index) => {
-                const currentLeft = parseFloat(item.style.left);
-                const targetLeft = positions[index].left;
+    // Call the function to set initial positions of items
+    setPositions();
 
-                const centerX = 700; // Center point
-                const gapWidth = 300; // Width of gap area
+    // Function to apply positions to all items on the page
+    function applyPositions() {
+        // Loop through each item and set their respective 'top' and 'left' positions
+        items.forEach((item, index) => {
+            item.style.top = positions[index].top + "px";   // Apply 'top' position
+            item.style.left = positions[index].left + "px"; // Apply 'left' position
+        });
+    }
 
-                const isCrossingGap = 
-                    (currentLeft < centerX && targetLeft > centerX) || 
-                    (currentLeft > centerX && targetLeft < centerX);
+    // Apply the initial positions to items
+    applyPositions();
 
-                if (isCrossingGap) {
-                    item.style.transition = 'opacity 0.3s ease-out';
-                    item.style.opacity = "0";
+    // Function to rotate items clockwise
+    function rotateItemsClockwise() {
+        // Prevent rotation if it's already in progress
+        if (rotationInProgress) return;
+        rotationInProgress = true;
+
+        // Move the last position in the array to the front (rotate positions array)
+        const lastPosition = positions.pop();
+        positions.unshift(lastPosition);
+
+        // Loop through each item and apply their updated positions
+        items.forEach((item, index) => {
+            const currentLeft = parseFloat(item.style.left); // Get the current left position
+            const targetLeft = positions[index].left; // Get the target left position
+
+            const centerX = 700; // Define the center point (where the middle item will be)
+            const gapWidth = 300; // The width of the gap between items
+
+            // Check if the item is crossing the center gap
+            const isCrossingGap = 
+                (currentLeft < centerX && targetLeft > centerX) || 
+                (currentLeft > centerX && targetLeft < centerX);
+
+            // If the item crosses the gap, hide and reposition it
+            if (isCrossingGap) {
+                item.style.transition = 'opacity 0.3s ease-out'; // Add a fade-out transition
+                item.style.opacity = "0"; // Set opacity to 0 (hide it)
+                
+                setTimeout(() => {
+                    item.style.transition = 'none'; // Remove transition
+                    item.style.top = positions[index].top + "px"; // Reposition item
+                    item.style.left = positions[index].left + "px"; // Reposition item
                     
+                    // After repositioning, fade the item back in
                     setTimeout(() => {
-                        item.style.transition = 'none';
-                        item.style.top = positions[index].top + "px";
-                        item.style.left = positions[index].left + "px";
-                        
-                        setTimeout(() => {
-                            item.style.transition = 'opacity 0.3s ease-in';
-                            item.style.opacity = "1";
-                        }, 100);
-                    }, 300);
-                } else {
-                    item.style.transition = 'all 0.8s ease-in-out';
-                    item.style.opacity = "1";
-                    item.style.top = positions[index].top + "px";
-                    item.style.left = positions[index].left + "px";
-                }
-            });
-
-            setTimeout(() => {
-                rotationInProgress = false;
-                if (!manualRotation) {
-                    checkCenterItemExpansion();
-                }
-            }, 800);
-        }
-
-        function rotateItemsAntiClockwise() {
-            if (rotationInProgress) return;
-            rotationInProgress = true;
-
-            const firstPosition = positions.shift();
-            positions.push(firstPosition);
-
-            items.forEach((item, index) => {
-                const currentLeft = parseFloat(item.style.left);
-                const targetLeft = positions[index].left;
-
-                const centerX = 700; // Center point
-                const gapWidth = 300; // Width of gap area
-
-                const isCrossingGap = 
-                    (currentLeft < centerX && targetLeft > centerX) || 
-                    (currentLeft > centerX && targetLeft < centerX);
-
-                if (isCrossingGap) {
-                    item.style.transition = 'opacity 0.3s ease-out';
-                    item.style.opacity = "0";
-                    
-                    setTimeout(() => {
-                        item.style.transition = 'none';
-                        item.style.top = positions[index].top + "px";
-                        item.style.left = positions[index].left + "px";
-                        
-                        setTimeout(() => {
-                            item.style.transition = 'opacity 0.3s ease-in';
-                            item.style.opacity = "1";
-                        }, 100);
-                    }, 300);
-                } else {
-                    item.style.transition = 'all 0.8s ease-in-out';
-                    item.style.opacity = "1";
-                    item.style.top = positions[index].top + "px";
-                    item.style.left = positions[index].left + "px";
-                }
-            });
-
-            setTimeout(() => {
-                rotationInProgress = false;
-                if (!manualRotation) {
-                    checkCenterItemExpansion();
-                }
-            }, 800);
-        }
-
-        function expandItem(item) {
-            items.forEach(el => el.classList.remove("expand"));
-            selectedItem = item;
-            item.classList.add("expand");
-
-            item.style.transition = 'all 0.2s ease-out'; 
-
-            setTimeout(() => {
-                item.style.transition = 'all 0.2s ease-in'; 
-                item.classList.remove("expand");
-            }, 2000);
-        }
-
-        function checkCenterItemExpansion() {
-            if (manualRotation) return;
-            const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
-            if (centerItem && centerItem !== selectedItem) {
-                expandItem(centerItem);
+                        item.style.transition = 'opacity 0.3s ease-in'; // Add fade-in transition
+                        item.style.opacity = "1"; // Set opacity back to 1 (show it)
+                    }, 100);
+                }, 300);
+            } else {
+                // If item doesn't cross the gap, simply move it with smooth transition
+                item.style.transition = 'all 0.8s ease-in-out'; 
+                item.style.opacity = "1"; // Ensure opacity is 1
+                item.style.top = positions[index].top + "px"; // Apply the updated top position
+                item.style.left = positions[index].left + "px"; // Apply the updated left position
             }
-        }
-
-        function startAutoRotate() {
-            clearInterval(autoRotateInterval);
-            manualRotation = false;
-            autoRotateInterval = setInterval(() => {
-                if (!rotationInProgress) {
-                    rotateItemsClockwise();
-                }
-            }, 3000);
-        }
-
-        function rotateToItemAndExpand(clickedItem) {
-            clearInterval(autoRotateInterval);
-            manualRotation = true;
-
-            items.forEach(el => el.classList.remove("expand"));
-
-            function rotateUntilCenter() {
-                const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
-                if (centerItem === clickedItem) {
-                    expandItem(clickedItem);
-                    manualRotation = false;
-                } else {
-                    const clickedIndex = Array.from(items).indexOf(clickedItem);
-                    const clickedLeft = positions[clickedIndex].left;
-                    const centerX = 700;
-
-                    if (clickedLeft < centerX) {
-                        rotateItemsAntiClockwise();
-                    } else {
-                        rotateItemsClockwise();
-                    }
-
-                    setTimeout(rotateUntilCenter, 800);
-                }
-            }
-
-            rotateUntilCenter();
-            setTimeout(startAutoRotate, 5000); 
-        }
-
-        items.forEach((item) => {
-            item.addEventListener("click", () => rotateToItemAndExpand(item));
         });
 
-        startAutoRotate();
-    </script>
+        // After the rotation finishes (duration of 800ms), reset rotationInProgress and check for center item
+        setTimeout(() => {
+            rotationInProgress = false;
+            if (!manualRotation) {
+                checkCenterItemExpansion(); // Check if center item should expand
+            }
+        }, 800);
+    }
+
+    // Function to rotate items anti-clockwise
+    function rotateItemsAntiClockwise() {
+        // Prevent rotation if it's already in progress
+        if (rotationInProgress) return;
+        rotationInProgress = true;
+
+        // Move the first position in the array to the end (rotate positions array)
+        const firstPosition = positions.shift();
+        positions.push(firstPosition);
+
+        // Loop through each item and apply their updated positions
+        items.forEach((item, index) => {
+            const currentLeft = parseFloat(item.style.left); // Get the current left position
+            const targetLeft = positions[index].left; // Get the target left position
+
+            const centerX = 700; // Define the center point (where the middle item will be)
+            const gapWidth = 300; // The width of the gap between items
+
+            // Check if the item is crossing the center gap
+            const isCrossingGap = 
+                (currentLeft < centerX && targetLeft > centerX) || 
+                (currentLeft > centerX && targetLeft < centerX);
+
+            // If the item crosses the gap, hide and reposition it
+            if (isCrossingGap) {
+                item.style.transition = 'opacity 0.3s ease-out'; // Add a fade-out transition
+                item.style.opacity = "0"; // Set opacity to 0 (hide it)
+                
+                setTimeout(() => {
+                    item.style.transition = 'none'; // Remove transition
+                    item.style.top = positions[index].top + "px"; // Reposition item
+                    item.style.left = positions[index].left + "px"; // Reposition item
+                    
+                    // After repositioning, fade the item back in
+                    setTimeout(() => {
+                        item.style.transition = 'opacity 0.3s ease-in'; // Add fade-in transition
+                        item.style.opacity = "1"; // Set opacity back to 1 (show it)
+                    }, 100);
+                }, 300);
+            } else {
+                // If item doesn't cross the gap, simply move it with smooth transition
+                item.style.transition = 'all 0.8s ease-in-out'; 
+                item.style.opacity = "1"; // Ensure opacity is 1
+                item.style.top = positions[index].top + "px"; // Apply the updated top position
+                item.style.left = positions[index].left + "px"; // Apply the updated left position
+            }
+        });
+
+        // After the rotation finishes (duration of 800ms), reset rotationInProgress and check for center item
+        setTimeout(() => {
+            rotationInProgress = false;
+            if (!manualRotation) {
+                checkCenterItemExpansion(); // Check if center item should expand
+            }
+        }, 800);
+    }
+
+    // Function to expand the clicked item
+    function expandItem(item) {
+        // Remove the 'expand' class from all items
+        items.forEach(el => el.classList.remove("expand"));
+        
+        // Store the selected item
+        selectedItem = item;
+
+        // Add the 'expand' class to the selected item (which will trigger expansion)
+        item.classList.add("expand");
+
+        item.style.transition = 'all 0.2s ease-out'; // Add transition for expanding effect
+
+        // After the expansion completes, remove the 'expand' class to restore original state
+        setTimeout(() => {
+            item.style.transition = 'all 0.2s ease-in'; // Transition back
+            item.classList.remove("expand"); // Remove the expansion
+        }, 2000);
+    }
+
+    // Function to check if the item at the center position should expand
+    function checkCenterItemExpansion() {
+        if (manualRotation) return; // Do not check during manual rotation
+        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+        if (centerItem && centerItem !== selectedItem) {
+            expandItem(centerItem); // Expand the center item if it's not the selected one
+        }
+    }
+
+    // Function to start auto-rotation at regular intervals
+    function startAutoRotate() {
+        clearInterval(autoRotateInterval); // Clear any existing interval
+        manualRotation = false; // Mark that the rotation is now auto
+        autoRotateInterval = setInterval(() => {
+            if (!rotationInProgress) {
+                rotateItemsClockwise(); // Start clockwise rotation every 3 seconds
+            }
+        }, 3000);
+    }
+
+    // Function to rotate to the clicked item and expand it
+   function rotateToItemAndExpand(clickedItem) {
+    clearInterval(autoRotateInterval); // Stop auto-rotation
+    manualRotation = true; // Mark that the rotation is manual (via click)
+
+    // Remove the 'expand' class from all items
+    items.forEach(el => el.classList.remove("expand"));
+
+    // Rotate until the clicked item reaches the center and expand it
+    function rotateUntilCenter() {
+        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+        const clickedIndex = Array.from(items).indexOf(clickedItem);
+        const clickedLeft = positions[clickedIndex].left;
+        const centerX = 700; // Center position
+
+        if (centerItem === clickedItem) {
+            expandItem(clickedItem); // Expand the clicked item once it reaches the center
+            manualRotation = false; // Rotation is complete
+        } else {
+            if (clickedLeft < centerX) {
+                rotateItemsAntiClockwise(); // Rotate anti-clockwise if item is left of center
+            } else {
+                rotateItemsClockwise(); // Rotate clockwise if item is right of center
+            }
+
+            // Keep checking until the clicked item reaches the center position
+            setTimeout(rotateUntilCenter, 800); // Adjust to the desired speed of rotation
+        }
+    }
+
+    rotateUntilCenter();
+    setTimeout(startAutoRotate, 5000); // Restart auto-rotation after 5 seconds
+}
+
+
+    // Add event listener for each item to rotate it and expand
+    items.forEach((item) => {
+        item.addEventListener("click", () => rotateToItemAndExpand(item));
+    });
+
+    // Start auto-rotation when the page loads
+    startAutoRotate();
+</script>
+
 </body>
 </html>

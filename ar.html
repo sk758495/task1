@@ -3,96 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Circular Navigation with GSAP</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <title>Rotational Animation with Expand</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+        .slider {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
+            overflow: hidden;
+            background-image: url('img/Final2.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
         }
+
         .container {
-            position: relative;
-            width: 500px;
-            height: 500px;
-            margin: 100px auto;
+            width: 1700px;
+            height: 600px;
+            perspective: 1000px;
+            transform-style: preserve-3d; /* This ensures items are 3D elements */
         }
-        .element {
-            position: absolute;
-            cursor: pointer;
-            background-color: #e0e0e0;
-            padding: 10px 20px;
-            border-radius: 15px;
-            transition: all 0.5s ease;
-        }
-        .center-box {
-            position: absolute;
-            top: 80%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+        .container{
             text-align: center;
-            z-index: 10;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .item {
+            position: absolute;
+            width: 200px;
+            height: 60px;
+            background-color: #dcdcff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.8s ease-in-out;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .item.expand {
+            width: 220px;
+            height: 200px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #ffffff;
+            border: 2px solid black;
+        }
+
+        .title {
+            font-size: 34px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .highlight {
+            color: #6A5ACD;
+        }
+
+        .dotted-circle {
+            width: 1200px;
+            height: 750px;
+            border: 2px dotted #000;
+            border-end-end-radius: 50%;
+            border-end-start-radius: 50%;
+            border-left: 200px;
+            border-right: 200px;
+            border-top: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -300px;
+            position: absolute;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="circleContainer">
-        <div class="element" data-content="Instant e-FIRA">Instant e-FIRA</div>
-        <div class="element" data-content="Faster Payments">Faster Payments</div>
-        <div class="element" data-content="Multi Currency Account">Multi Currency Account</div>
-        <div class="element" data-content="Quick Onboarding">Quick Onboarding</div>
-        <div class="element" data-content="Tax and Compliance Support">Tax and Compliance Support</div>
-        <div class="element" data-content="Marketing">Marketing</div>
-        <div class="element" data-content="Setup">Setup</div>
-        <div class="element" data-content="Logistics">Logistics</div>
+    <div class="slider">
+        <div class="dotted-circle"></div>
 
-        <div class="center-box" id="centerBox">
-            <h3>Account Management Support</h3>
-            <p>1. Personalized assistance to manage your Amazon and marketplace accounts.<br>
-               2. Optimize product listings, monitor store performance, and boost sales.</p>
+        <div class="container">
+            <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div>
+            <img src="img/imazon.png" alt="Amazon Global Selling" width="200">
+
+            <div class="item" data-index="0">Instant e-FIRA</div>
+            <div class="item" data-index="1">Faster Payments</div>
+            <div class="item" data-index="2">Multi Currency Account</div>
+            <div class="item" data-index="3">Quick Onboarding</div>
+            <div class="item" data-index="4">Tax and Compliance Support</div>
+            <div class="item" data-index="5">Marketing</div>
+            <div class="item" data-index="6">Setup</div>
+            <div class="item" data-index="7">Logistics</div>
+            <div class="item" data-index="8">Help</div>
         </div>
     </div>
 
-    <script>
-        const elements = document.querySelectorAll('.element');
-        const container = document.getElementById('circleContainer');
-        const centerBox = document.getElementById('centerBox');
-        const radius = 170;
-        const centerX = 250;
-        const centerY = 200;
-
-        let currentAngleOffset = 0;
-
-        function positionElements(angleOffset) {
-            elements.forEach((element, index) => {
-                const angle = (index / elements.length) * Math.PI * 2 + angleOffset;
-                const x = centerX + radius * Math.cos(angle) - element.offsetWidth / 2;
-                const y = centerY + radius * Math.sin(angle) - element.offsetHeight / 2;
-                gsap.to(element, { x: x, y: y, duration: 1 });
-            });
+    <style>
+        .item {
+            position: absolute;
+            opacity: 1;
+            transition: opacity 0.8s ease-in-out; /* Smooth transition for opacity */
         }
 
-        positionElements(currentAngleOffset);
+        .fade-out {
+            opacity: 0;
+        }
 
-        elements.forEach(element => {
-            element.addEventListener('click', function () {
-                const content = element.getAttribute('data-content');
-                const clickedIndex = Array.from(elements).indexOf(element);
-                const targetIndex = 5; // Position near bottom (like Multi Currency Account)
-                const diff = clickedIndex - targetIndex;
-                const angleStep = (2 * Math.PI) / elements.length;
-                currentAngleOffset -= diff * angleStep;
-
-                positionElements(currentAngleOffset);
-
-                centerBox.innerHTML = `<h3>${content}</h3><p>Details about ${content}...</p>`;
+        .fade-in {
+            opacity: 1;
+        }
+    </style>
+    
+    <script>
+        const items = document.querySelectorAll(".item");
+        let positions;
+        let selectedItem = null;
+        let autoRotateInterval;
+        let manualRotation = false;
+    
+        function setPositions() {
+            positions = [
+                { top: 120, left: 140 },
+                { top: 240, left: 180 },
+                { top: 350, left: 250 },
+                { top: 450, left: 400 },
+                { top: 510, left: 700 }, // Center position
+                { top: 450, left: 1000 },
+                { top: 350, left: 1150 },
+                { top: 240, left: 1300 },
+                { top: 120, left: 1350 }
+            ];
+        }
+    
+        setPositions();
+    
+        function applyPositions() {
+            items.forEach((item, index) => {
+                item.style.top = positions[index].top + "px";
+                item.style.left = positions[index].left + "px";
             });
+        }
+    
+        applyPositions();
+    
+        function expandItem(item) {
+            items.forEach(el => el.classList.remove("expand"));
+            selectedItem = item;
+            item.classList.add("expand");
+    
+            item.style.transition = 'all 0.2s ease-out';
+    
+            setTimeout(() => {
+                item.style.transition = 'all 0.2s ease-in';
+                item.classList.remove("expand");
+            }, 2000);
+        }
+    
+        function shiftItemsToCenter(clickedItem) {
+            clearInterval(autoRotateInterval);
+            manualRotation = true;
+    
+            const centerIndex = positions.findIndex(pos => pos.left === 700); // Center position index
+            const clickedIndex = Array.from(items).indexOf(clickedItem);
+            const offset = clickedIndex - centerIndex;
+    
+            const newPositions = positions.map((pos, index) => {
+                let newIndex = (index - offset + positions.length) % positions.length;
+                return positions[newIndex];
+            });
+    
+            items.forEach((item, index) => {
+                const currentLeft = parseFloat(item.style.left);
+                const targetLeft = newPositions[index].left;
+                const centerX = 700; // Center point
+    
+                // Check if the item will cross the center gap
+                const isCrossingGap =
+                    (currentLeft < centerX && targetLeft > centerX) ||
+                    (currentLeft > centerX && targetLeft < centerX);
+    
+                if (isCrossingGap) {
+                    item.style.transition = 'opacity 0.3s ease-out';
+                    item.style.opacity = "0";
+    
+                    setTimeout(() => {
+                        item.style.transition = 'none';
+                        item.style.top = newPositions[index].top + "px";
+                        item.style.left = newPositions[index].left + "px";
+    
+                        setTimeout(() => {
+                            item.style.transition = 'opacity 0.3s ease-in';
+                            item.style.opacity = "1";
+                        }, 100);
+                    }, 300);
+                } else {
+                    item.style.transition = 'all 0.8s ease-in-out';
+                    item.style.opacity = "1";
+                    item.style.top = newPositions[index].top + "px";
+                    item.style.left = newPositions[index].left + "px";
+                }
+            });
+    
+            setTimeout(() => {
+                const centerItem = Array.from(items).find((_, index) => newPositions[index].left === 700);
+                if (centerItem === clickedItem) {
+                    expandItem(clickedItem);
+                }
+                manualRotation = false;
+                startAutoRotate();
+            }, 900);
+        }
+    
+        function startAutoRotate() {
+            clearInterval(autoRotateInterval);
+            manualRotation = false;
+            autoRotateInterval = setInterval(() => {
+                const lastPosition = positions.pop();
+                positions.unshift(lastPosition);
+    
+                items.forEach((item, index) => {
+                    const currentLeft = parseFloat(item.style.left);
+                    const targetLeft = positions[index].left;
+                    const centerX = 700;
+    
+                    const isCrossingGap =
+                        (currentLeft < centerX && targetLeft > centerX) ||
+                        (currentLeft > centerX && targetLeft < centerX);
+    
+                    if (isCrossingGap) {
+                        item.style.transition = 'opacity 0.3s ease-out';
+                        item.style.opacity = "0";
+    
+                        setTimeout(() => {
+                            item.style.transition = 'none';
+                            item.style.top = positions[index].top + "px";
+                            item.style.left = positions[index].left + "px";
+    
+                            setTimeout(() => {
+                                item.style.transition = 'opacity 0.3s ease-in';
+                                item.style.opacity = "1";
+                            }, 100);
+                        }, 300);
+                    } else {
+                        item.style.transition = 'all 0.8s ease-in-out';
+                        item.style.opacity = "1";
+                        item.style.top = positions[index].top + "px";
+                        item.style.left = positions[index].left + "px";
+                    }
+                });
+            }, 3000);
+        }
+    
+        items.forEach((item) => {
+            item.addEventListener("click", () => shiftItemsToCenter(item));
         });
+    
+        startAutoRotate();
     </script>
+    
+    
 </body>
 </html>
