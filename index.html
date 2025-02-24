@@ -1,110 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Define the character encoding for the document -->
     <meta charset="UTF-8">
+    
+    <!-- Ensure the page is responsive and scales correctly on different devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Title of the page -->
     <title>Rotational Animation with Expand</title>
+    
+    <!-- Linking external Font Awesome CSS for icons (if needed) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
+        /* Styling for the main slider container */
         .slider {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            background-image: url('img/Final2.png');
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
+            display: flex; /* Use flexbox layout */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            height: 100vh; /* Set the container height to full viewport height */
+            margin: 0; /* Remove margin */
+            overflow: hidden; /* Hide any overflowing content */
+            background-image: url('img/Final2.png'); /* Set background image */
+            background-size: cover; /* Ensure the background covers the full area */
+            background-position: center center; /* Center the background image */
+            background-repeat: no-repeat; /* Prevent repeating the background image */
         }
 
-        .container {
-            width: 1700px;
-            height: 600px;
-            perspective: 1000px;
-            transform-style: preserve-3d; /* This ensures items are 3D elements */
-        }
-
-        .container{
-            text-align: center;
-            justify-content: center;
-            align-content: center;
-        }
-
+        /* Styling for each item within the slider */
         .item {
-            position: absolute;
-            width: 200px;
-            height: 60px;
-            background-color: #dcdcff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.8s ease-in-out;
-            text-align: center;
-            font-size: 14px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: absolute; /* Position items absolutely within the container */
+            width: 200px; /* Set width of each item */
+            height: 60px; /* Set height of each item */
+            background-color: #dcdcff; /* Background color of the item */
+            display: flex; /* Use flexbox for internal alignment */
+            justify-content: center; /* Center text horizontally */
+            align-items: center; /* Center text vertically */
+            cursor: pointer; /* Show pointer cursor on hover */
+            transition: all 0.6s ease-out; /* Smooth transition for changes */
+            text-align: center; /* Center text */
+            font-size: 14px; /* Set font size */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Light shadow for better contrast */
         }
 
+        /* Expanding effect for the item */
         .item.expand {
-            width: 220px;
-            height: 200px;
-            font-size: 16px;
-            font-weight: bold;
-            background-color: #ffffff;
-            border: 2px solid black;
+            width: 220px; /* Increase width when expanded */
+            height: 200px; /* Increase height when expanded */
+            font-size: 16px; /* Larger font size when expanded */
+            font-weight: bold; /* Bold text when expanded */
+            background-color: #ffffff; /* Change background color to white */
+            border: 2px solid black; /* Add black border */
+            transition: all 2s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth cubic bezier transition for expansion */
         }
 
-        .title {
-            font-size: 34px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .highlight {
-            color: #6A5ACD;
-        }
-
-        .dotted-circle {
-            width: 1200px;
-            height: 750px;
-            border: 2px dotted #000;
-            border-end-end-radius: 50%;
-            border-end-start-radius: 50%;
-            border-left: 200px;
-            border-right: 200px;
-            border-top: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: -300px;
-            position: absolute;
-        }
-        .item {
-            position: absolute;
-            opacity: 1;
-            transition: opacity 0.8s ease-in-out; /* Smooth transition for opacity */
-        }
-
+        /* Smooth fade-out effect */
         .fade-out {
-            opacity: 0;
+            opacity: 0; /* Set opacity to 0 for fade-out */
+            transition: opacity 0.5s ease-out; /* Smooth fade-out transition */
         }
 
+        /* Smooth fade-in effect */
         .fade-in {
-            opacity: 1;
+            opacity: 1; /* Set opacity to 1 for fade-in */
+            transition: opacity 0.5s ease-in; /* Smooth fade-in transition */
+        }
+
+        /* Styling for the dotted circle */
+        .dotted-circle {
+            width: 1200px; /* Set width of the circle */
+            height: 750px; /* Set height of the circle */
+            border: 2px dotted #000; /* Dotted border */
+            border-radius: 50%; /* Circular shape */
+            display: flex; /* Use flexbox for internal alignment */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            margin-top: -300px; /* Position the circle towards the top */
+            position: absolute; /* Position the circle absolutely within the container */
+            transition: all 1s ease-in-out; /* Smooth transition for any changes */
+        }
+
+        /* Container with 3D perspective */
+        .container {
+            width: 1700px; /* Set width of the container */
+            height: 600px; /* Set height of the container */
+            perspective: 1200px; /* Apply 3D perspective effect */
+            transition: all 0.6s ease-in-out; /* Smooth transition for container changes */
+            text-align: center; align-content: center; justify-content: center; align-items: center;
+        }
+
+        /* Title styling */
+        .title {
+            font-size: 34px; /* Set font size */
+            font-weight: bold; /* Bold text */
+            color: #333; /* Text color */
+        }
+
+        /* Highlighted text style */
+        .highlight {
+            color: #6A5ACD; /* Set color for highlighted text */
+        }
+
+        /* Additional styling for the dotted-circle */
+        .dotted-circle {
+            width: 1200px; /* Set width of the circle */
+            height: 750px; /* Set height of the circle */
+            border: 2px dotted #000; /* Dotted border */
+            border-end-end-radius: 50%; /* Apply rounded corners */
+            border-end-start-radius: 50%; /* Apply rounded corners */
+            border-left: 200px; /* Apply left border */
+            border-right: 200px; /* Apply right border */
+            border-top: none; /* Remove top border */
+            display: flex; /* Use flexbox for internal alignment */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            margin-top: -300px; /* Position circle towards the top */
+            position: absolute; /* Absolute positioning */
         }
     </style>
 </head>
 <body>
+    <!-- Main slider container with the dotted circle and items -->
     <div class="slider">
-        <div class="dotted-circle"></div>
+        <div class="dotted-circle"></div> <!-- Dotted circle element -->
 
+        <!-- Container for the title and items -->
         <div class="container">
-            <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div>
-            <img src="img/imazon.png" alt="Amazon Global Selling" width="200">
+            <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div> <!-- Title -->
 
+            <!-- Image for Amazon Global Selling -->
+            <img src="img/imazon.png" style="text-align: center; align-content: center; justify-content: center; align-items: center;" alt="Amazon Global Selling" width="200">
+
+            <!-- List of items, each with a different label -->
             <div class="item" data-index="0">Instant e-FIRA</div>
             <div class="item" data-index="1">Faster Payments</div>
             <div class="item" data-index="2">Multi Currency Account</div>
@@ -117,7 +146,6 @@
         </div>
     </div>
 
-        
     <script>
     // Select all elements with the class 'item' and store them in the 'items' variable.
     const items = document.querySelectorAll(".item");
@@ -169,142 +197,121 @@
 
     // Function to rotate items clockwise
     function rotateItemsClockwise() {
-        // Prevent rotation if it's already in progress
-        if (rotationInProgress) return;
+        if (rotationInProgress) return; // Prevent multiple rotations simultaneously
         rotationInProgress = true;
 
-        // Move the last position in the array to the front (rotate positions array)
-        const lastPosition = positions.pop();
-        positions.unshift(lastPosition);
+        const lastPosition = positions.pop(); // Get the last position
+        positions.unshift(lastPosition); // Move it to the start of the array
 
-        // Loop through each item and apply their updated positions
         items.forEach((item, index) => {
-            const currentLeft = parseFloat(item.style.left); // Get the current left position
-            const targetLeft = positions[index].left; // Get the target left position
+            const currentLeft = parseFloat(item.style.left); // Get current left position
+            const targetLeft = positions[index].left; // Get target left position
+            const centerX = 700; // Center position
 
-            const centerX = 700; // Define the center point (where the middle item will be)
-            const gapWidth = 300; // The width of the gap between items
-
-            // Check if the item is crossing the center gap
+            // Check if the item is crossing the gap (center)
             const isCrossingGap = 
                 (currentLeft < centerX && targetLeft > centerX) || 
                 (currentLeft > centerX && targetLeft < centerX);
 
-            // If the item crosses the gap, hide and reposition it
+            // Apply rotation effect if crossing the gap
             if (isCrossingGap) {
-                item.style.transition = 'opacity 0.3s ease-out'; // Add a fade-out transition
-                item.style.opacity = "0"; // Set opacity to 0 (hide it)
+                item.style.transition = 'opacity 2s ease-out, top 3s ease-out, left 2s ease-out';
+                item.style.opacity = "0"; // Fade out while rotating
                 
                 setTimeout(() => {
-                    item.style.transition = 'none'; // Remove transition
-                    item.style.top = positions[index].top + "px"; // Reposition item
-                    item.style.left = positions[index].left + "px"; // Reposition item
-                    
-                    // After repositioning, fade the item back in
+                    item.style.transition = 'none'; // Disable transition temporarily
+                    item.style.top = positions[index].top + "px"; // Apply new position
+                    item.style.left = positions[index].left + "px"; // Apply new position
                     setTimeout(() => {
-                        item.style.transition = 'opacity 0.3s ease-in'; // Add fade-in transition
-                        item.style.opacity = "1"; // Set opacity back to 1 (show it)
+                        item.style.transition = 'opacity 3s ease-in'; // Fade in back
+                        item.style.opacity = "1";
                     }, 100);
-                }, 300);
+                }, 500);
             } else {
-                // If item doesn't cross the gap, simply move it with smooth transition
-                item.style.transition = 'all 0.8s ease-in-out'; 
+                item.style.transition = 'top 3s ease-out, left 3s ease-out, opacity 3s ease-in-out';
                 item.style.opacity = "1"; // Ensure opacity is 1
-                item.style.top = positions[index].top + "px"; // Apply the updated top position
-                item.style.left = positions[index].left + "px"; // Apply the updated left position
+                item.style.top = positions[index].top + "px"; // Apply new top position
+                item.style.left = positions[index].left + "px"; // Apply new left position
             }
         });
 
-        // After the rotation finishes (duration of 800ms), reset rotationInProgress and check for center item
         setTimeout(() => {
             rotationInProgress = false;
             if (!manualRotation) {
                 checkCenterItemExpansion(); // Check if center item should expand
             }
-        }, 800);
+        }, 1000);
     }
 
     // Function to rotate items anti-clockwise
     function rotateItemsAntiClockwise() {
-        // Prevent rotation if it's already in progress
-        if (rotationInProgress) return;
+        if (rotationInProgress) return; // Prevent multiple rotations simultaneously
         rotationInProgress = true;
 
-        // Move the first position in the array to the end (rotate positions array)
-        const firstPosition = positions.shift();
-        positions.push(firstPosition);
+        const firstPosition = positions.shift(); // Get the first position
+        positions.push(firstPosition); // Move it to the end of the array
 
-        // Loop through each item and apply their updated positions
         items.forEach((item, index) => {
-            const currentLeft = parseFloat(item.style.left); // Get the current left position
-            const targetLeft = positions[index].left; // Get the target left position
+            const currentLeft = parseFloat(item.style.left); // Get current left position
+            const targetLeft = positions[index].left; // Get target left position
+            const centerX = 700; // Center position
 
-            const centerX = 700; // Define the center point (where the middle item will be)
-            const gapWidth = 300; // The width of the gap between items
-
-            // Check if the item is crossing the center gap
+            // Check if the item is crossing the gap (center)
             const isCrossingGap = 
                 (currentLeft < centerX && targetLeft > centerX) || 
                 (currentLeft > centerX && targetLeft < centerX);
 
-            // If the item crosses the gap, hide and reposition it
+            // Apply rotation effect if crossing the gap
             if (isCrossingGap) {
-                item.style.transition = 'opacity 0.3s ease-out'; // Add a fade-out transition
-                item.style.opacity = "0"; // Set opacity to 0 (hide it)
+                item.style.transition = 'opacity 2s ease-out, top 3s ease-out, left 2s ease-out';
+                item.style.opacity = "0"; // Fade out while rotating
                 
                 setTimeout(() => {
-                    item.style.transition = 'none'; // Remove transition
-                    item.style.top = positions[index].top + "px"; // Reposition item
-                    item.style.left = positions[index].left + "px"; // Reposition item
-                    
-                    // After repositioning, fade the item back in
+                    item.style.transition = 'none'; // Disable transition temporarily
+                    item.style.top = positions[index].top + "px"; // Apply new position
+                    item.style.left = positions[index].left + "px"; // Apply new position
                     setTimeout(() => {
-                        item.style.transition = 'opacity 0.3s ease-in'; // Add fade-in transition
-                        item.style.opacity = "1"; // Set opacity back to 1 (show it)
+                        item.style.transition = 'opacity 3s ease-in'; // Fade in back
+                        item.style.opacity = "1";
                     }, 100);
-                }, 300);
+                }, 500);
             } else {
-                // If item doesn't cross the gap, simply move it with smooth transition
-                item.style.transition = 'all 0.8s ease-in-out'; 
+                item.style.transition = 'top 3s ease-out, left 3s ease-out, opacity 3s ease-in-out';
                 item.style.opacity = "1"; // Ensure opacity is 1
-                item.style.top = positions[index].top + "px"; // Apply the updated top position
-                item.style.left = positions[index].left + "px"; // Apply the updated left position
+                item.style.top = positions[index].top + "px"; // Apply new top position
+                item.style.left = positions[index].left + "px"; // Apply new left position
             }
         });
 
-        // After the rotation finishes (duration of 800ms), reset rotationInProgress and check for center item
         setTimeout(() => {
             rotationInProgress = false;
             if (!manualRotation) {
                 checkCenterItemExpansion(); // Check if center item should expand
             }
-        }, 800);
+        }, 400);
     }
 
     // Function to expand the clicked item
     function expandItem(item) {
-        // Remove the 'expand' class from all items
-        items.forEach(el => el.classList.remove("expand"));
+        items.forEach(el => el.classList.remove("expand")); // Remove expansion from all items
         
-        // Store the selected item
-        selectedItem = item;
+        selectedItem = item; // Store the selected item
 
-        // Add the 'expand' class to the selected item (which will trigger expansion)
-        item.classList.add("expand");
+        item.classList.add("expand"); // Add the 'expand' class to trigger the expansion
 
-        item.style.transition = 'all 0.2s ease-out'; // Add transition for expanding effect
+        item.style.transition = 'all 3s ease-out'; // Smooth transition for expanding
 
-        // After the expansion completes, remove the 'expand' class to restore original state
+        // After the expansion completes, transition back to the original size
         setTimeout(() => {
-            item.style.transition = 'all 0.2s ease-in'; // Transition back
+            item.style.transition = 'all 3s ease-in'; // Transition back
             item.classList.remove("expand"); // Remove the expansion
-        }, 2000);
+        }, 1000);
     }
 
     // Function to check if the item at the center position should expand
     function checkCenterItemExpansion() {
-        if (manualRotation) return; // Do not check during manual rotation
-        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+        if (manualRotation) return; // Skip if rotation is manual
+        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700); // Find the center item
         if (centerItem && centerItem !== selectedItem) {
             expandItem(centerItem); // Expand the center item if it's not the selected one
         }
@@ -313,7 +320,7 @@
     // Function to start auto-rotation at regular intervals
     function startAutoRotate() {
         clearInterval(autoRotateInterval); // Clear any existing interval
-        manualRotation = false; // Mark that the rotation is now auto
+        manualRotation = false; // Mark that rotation is now auto
         autoRotateInterval = setInterval(() => {
             if (!rotationInProgress) {
                 rotateItemsClockwise(); // Start clockwise rotation every 3 seconds
@@ -326,14 +333,12 @@
     clearInterval(autoRotateInterval); // Stop auto-rotation
     manualRotation = true; // Mark that the rotation is manual (via click)
 
-    // Remove the 'expand' class from all items
-    items.forEach(el => el.classList.remove("expand"));
+    items.forEach(el => el.classList.remove("expand")); // Remove expansion from all items
 
-    // Rotate until the clicked item reaches the center and expand it
     function rotateUntilCenter() {
-        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
-        const clickedIndex = Array.from(items).indexOf(clickedItem);
-        const clickedLeft = positions[clickedIndex].left;
+        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700); // Find the center item
+        const clickedIndex = Array.from(items).indexOf(clickedItem); // Find the index of clicked item
+        const clickedLeft = positions[clickedIndex].left; // Get the left position of clicked item
         const centerX = 700; // Center position
 
         if (centerItem === clickedItem) {
@@ -347,7 +352,7 @@
             }
 
             // Keep checking until the clicked item reaches the center position
-            setTimeout(rotateUntilCenter, 800); // Adjust to the desired speed of rotation
+            setTimeout(rotateUntilCenter, 2000); // Adjust to the desired speed of rotation
         }
     }
 
@@ -358,7 +363,7 @@
 
     // Add event listener for each item to rotate it and expand
     items.forEach((item) => {
-        item.addEventListener("click", () => rotateToItemAndExpand(item));
+        item.addEventListener("click", () => rotateToItemAndExpand(item)); // Trigger rotation and expansion on click
     });
 
     // Start auto-rotation when the page loads
