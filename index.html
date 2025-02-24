@@ -147,228 +147,310 @@
     </div>
 
     <script>
-    // Select all elements with the class 'item' and store them in the 'items' variable.
-    const items = document.querySelectorAll(".item");
-
-    // Variable to track if rotation is in progress
-    let rotationInProgress = false;
-
-    // Variable to store positions of all items (top and left)
-    let positions;
-
-    // Variable to store the selected item when expanded
-    let selectedItem = null;
-
-    // Variable to handle auto-rotation interval
-    let autoRotateInterval;
-
-    // Flag to track if the rotation is manual (via clicking) or auto
-    let manualRotation = false;
-
-    // Function to set initial positions of items
-    function setPositions() {
-        positions = [
-            { top: 120, left: 140 },   // Position for the first item
-            { top: 240, left: 180 },   // Position for the second item
-            { top: 350, left: 250 },   // Position for the third item
-            { top: 450, left: 400 },   // Position for the fourth item
-            { top: 510, left: 700 },   // Center position (this is where the middle item will be)
-            { top: 450, left: 1000 },  // Position for the sixth item
-            { top: 350, left: 1150 },  // Position for the seventh item
-            { top: 240, left: 1300 },  // Position for the eighth item
-            { top: 120, left: 1350 }   // Position for the ninth item
-        ];
-    }
-
-    // Call the function to set initial positions of items
-    setPositions();
-
-    // Function to apply positions to all items on the page
-    function applyPositions() {
-        // Loop through each item and set their respective 'top' and 'left' positions
-        items.forEach((item, index) => {
-            item.style.top = positions[index].top + "px";   // Apply 'top' position
-            item.style.left = positions[index].left + "px"; // Apply 'left' position
-        });
-    }
-
-    // Apply the initial positions to items
-    applyPositions();
-
-    // Function to rotate items clockwise
-    function rotateItemsClockwise() {
-        if (rotationInProgress) return; // Prevent multiple rotations simultaneously
-        rotationInProgress = true;
-
-        const lastPosition = positions.pop(); // Get the last position
-        positions.unshift(lastPosition); // Move it to the start of the array
-
-        items.forEach((item, index) => {
-            const currentLeft = parseFloat(item.style.left); // Get current left position
-            const targetLeft = positions[index].left; // Get target left position
-            const centerX = 700; // Center position
-
-            // Check if the item is crossing the gap (center)
-            const isCrossingGap = 
-                (currentLeft < centerX && targetLeft > centerX) || 
-                (currentLeft > centerX && targetLeft < centerX);
-
-            // Apply rotation effect if crossing the gap
-            if (isCrossingGap) {
-                item.style.transition = 'opacity 2s ease-out, top 3s ease-out, left 2s ease-out';
-                item.style.opacity = "0"; // Fade out while rotating
-                
-                setTimeout(() => {
-                    item.style.transition = 'none'; // Disable transition temporarily
-                    item.style.top = positions[index].top + "px"; // Apply new position
-                    item.style.left = positions[index].left + "px"; // Apply new position
-                    setTimeout(() => {
-                        item.style.transition = 'opacity 3s ease-in'; // Fade in back
-                        item.style.opacity = "1";
-                    }, 100);
-                }, 500);
-            } else {
-                item.style.transition = 'top 3s ease-out, left 3s ease-out, opacity 3s ease-in-out';
-                item.style.opacity = "1"; // Ensure opacity is 1
-                item.style.top = positions[index].top + "px"; // Apply new top position
-                item.style.left = positions[index].left + "px"; // Apply new left position
-            }
-        });
-
-        setTimeout(() => {
-            rotationInProgress = false;
-            if (!manualRotation) {
-                checkCenterItemExpansion(); // Check if center item should expand
-            }
-        }, 1000);
-    }
-
-    // Function to rotate items anti-clockwise
-    function rotateItemsAntiClockwise() {
-        if (rotationInProgress) return; // Prevent multiple rotations simultaneously
-        rotationInProgress = true;
-
-        const firstPosition = positions.shift(); // Get the first position
-        positions.push(firstPosition); // Move it to the end of the array
-
-        items.forEach((item, index) => {
-            const currentLeft = parseFloat(item.style.left); // Get current left position
-            const targetLeft = positions[index].left; // Get target left position
-            const centerX = 700; // Center position
-
-            // Check if the item is crossing the gap (center)
-            const isCrossingGap = 
-                (currentLeft < centerX && targetLeft > centerX) || 
-                (currentLeft > centerX && targetLeft < centerX);
-
-            // Apply rotation effect if crossing the gap
-            if (isCrossingGap) {
-                item.style.transition = 'opacity 2s ease-out, top 3s ease-out, left 2s ease-out';
-                item.style.opacity = "0"; // Fade out while rotating
-                
-                setTimeout(() => {
-                    item.style.transition = 'none'; // Disable transition temporarily
-                    item.style.top = positions[index].top + "px"; // Apply new position
-                    item.style.left = positions[index].left + "px"; // Apply new position
-                    setTimeout(() => {
-                        item.style.transition = 'opacity 3s ease-in'; // Fade in back
-                        item.style.opacity = "1";
-                    }, 100);
-                }, 500);
-            } else {
-                item.style.transition = 'top 3s ease-out, left 3s ease-out, opacity 3s ease-in-out';
-                item.style.opacity = "1"; // Ensure opacity is 1
-                item.style.top = positions[index].top + "px"; // Apply new top position
-                item.style.left = positions[index].left + "px"; // Apply new left position
-            }
-        });
-
-        setTimeout(() => {
-            rotationInProgress = false;
-            if (!manualRotation) {
-                checkCenterItemExpansion(); // Check if center item should expand
-            }
-        }, 400);
-    }
-
-    // Function to expand the clicked item
-    function expandItem(item) {
-        items.forEach(el => el.classList.remove("expand")); // Remove expansion from all items
-        
-        selectedItem = item; // Store the selected item
-
-        item.classList.add("expand"); // Add the 'expand' class to trigger the expansion
-
-        item.style.transition = 'all 3s ease-out'; // Smooth transition for expanding
-
-        // After the expansion completes, transition back to the original size
-        setTimeout(() => {
-            item.style.transition = 'all 3s ease-in'; // Transition back
-            item.classList.remove("expand"); // Remove the expansion
-        }, 1000);
-    }
-
-    // Function to check if the item at the center position should expand
-    function checkCenterItemExpansion() {
-        if (manualRotation) return; // Skip if rotation is manual
-        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700); // Find the center item
-        if (centerItem && centerItem !== selectedItem) {
-            expandItem(centerItem); // Expand the center item if it's not the selected one
+        // Script tag ke andar JavaScript code likha gaya hai.
+      
+        // ".item" class wale sabhi HTML elements ko select karke 'items' variable mein store karta hai.
+        const items = document.querySelectorAll(".item");
+      
+        // Yeh variable track karta hai ki abhi koi rotation animation chal rahi hai ya nahi. Shuru mein false set hai.
+        let rotationInProgress = false;
+      
+        // Yeh variable sabhi items ke positions (top aur left coordinates) ko store karega.
+        let positions;
+      
+        // Yeh variable us item ko store karega jo click karke expand hua hai; shuruaat mein koi item selected nahi hai.
+        let selectedItem = null;
+      
+        // Yeh variable auto-rotation ke liye setInterval ka ID store karega.
+        let autoRotateInterval;
+      
+        // Yeh flag batata hai ki rotation manual (click se) hua hai ya auto (time-based) rotation.
+        let manualRotation = false;
+      
+        // Yeh function sabhi items ke liye unki initial positions set karta hai.
+        function setPositions() {
+            // Positions array ko define karte hain, jisme har object mein 'top' aur 'left' ki value di gayi hai.
+            positions = [
+                { top: 120, left: 140 },   // Pehle item ki position
+                { top: 240, left: 180 },   // Dusre item ki position
+                { top: 350, left: 250 },   // Teesre item ki position
+                { top: 450, left: 400 },   // Chauthe item ki position
+                { top: 510, left: 700 },   // Center (beech) item ki position
+                { top: 450, left: 1000 },  // Chhatthe item ki position
+                { top: 350, left: 1150 },  // Saatwe item ki position
+                { top: 240, left: 1300 },  // Aathwe item ki position
+                { top: 120, left: 1350 }   // Nauwe item ki position
+            ];
         }
-    }
-
-    // Function to start auto-rotation at regular intervals
-    function startAutoRotate() {
-        clearInterval(autoRotateInterval); // Clear any existing interval
-        manualRotation = false; // Mark that rotation is now auto
-        autoRotateInterval = setInterval(() => {
-            if (!rotationInProgress) {
-                rotateItemsClockwise(); // Start clockwise rotation every 3 seconds
-            }
-        }, 3000);
-    }
-
-    // Function to rotate to the clicked item and expand it
-   function rotateToItemAndExpand(clickedItem) {
-    clearInterval(autoRotateInterval); // Stop auto-rotation
-    manualRotation = true; // Mark that the rotation is manual (via click)
-
-    items.forEach(el => el.classList.remove("expand")); // Remove expansion from all items
-
-    function rotateUntilCenter() {
-        const centerItem = Array.from(items).find((_, index) => positions[index].left === 700); // Find the center item
-        const clickedIndex = Array.from(items).indexOf(clickedItem); // Find the index of clicked item
-        const clickedLeft = positions[clickedIndex].left; // Get the left position of clicked item
-        const centerX = 700; // Center position
-
-        if (centerItem === clickedItem) {
-            expandItem(clickedItem); // Expand the clicked item once it reaches the center
-            manualRotation = false; // Rotation is complete
-        } else {
-            if (clickedLeft < centerX) {
-                rotateItemsAntiClockwise(); // Rotate anti-clockwise if item is left of center
-            } else {
-                rotateItemsClockwise(); // Rotate clockwise if item is right of center
-            }
-
-            // Keep checking until the clicked item reaches the center position
-            setTimeout(rotateUntilCenter, 2000); // Adjust to the desired speed of rotation
+      
+        // Ab initial positions set karne ke liye setPositions() function ko call karte hain.
+        setPositions();
+      
+        // Yeh function har ek item element par uske corresponding position (top aur left) apply karta hai.
+        function applyPositions() {
+            // Har item par loop chalate hain aur unka index use karte hue unki position set karte hain.
+            items.forEach((item, index) => {
+                // CSS ke 'top' property ko positions array ke top value se set karte hain, 'px' unit ke sath.
+                item.style.top = positions[index].top + "px";
+                // CSS ke 'left' property ko positions array ke left value se set karte hain, 'px' unit ke sath.
+                item.style.left = positions[index].left + "px";
+            });
         }
-    }
-
-    rotateUntilCenter();
-    setTimeout(startAutoRotate, 5000); // Restart auto-rotation after 5 seconds
-}
-
-
-    // Add event listener for each item to rotate it and expand
-    items.forEach((item) => {
-        item.addEventListener("click", () => rotateToItemAndExpand(item)); // Trigger rotation and expansion on click
-    });
-
-    // Start auto-rotation when the page loads
-    startAutoRotate();
-</script>
+      
+        // Pehli baar items ko unki initial positions par lagane ke liye applyPositions() function call karte hain.
+        applyPositions();
+      
+        // Yeh function items ko clockwise (ghadi ki sui ke disha mein) rotate karta hai.
+        function rotateItemsClockwise() {
+            // Agar abhi koi rotation chal raha hai, toh function ko exit kar do (taaki overlapping animations na ho).
+            if (rotationInProgress) return;
+            // Ab rotation ko in-progress mark kar dete hain.
+            rotationInProgress = true;
+      
+            // Positions array se last element (aakhri position) ko nikaalte hain aur usse 'lastPosition' variable mein store karte hain.
+            const lastPosition = positions.pop();
+            // Ab is last position ko array ke shuruat mein daal dete hain, jis se positions rotate ho jati hain.
+            positions.unshift(lastPosition);
+      
+            // Sabhi items par loop chala ke nayi positions apply karte hain.
+            items.forEach((item, index) => {
+                // Har item ke current 'left' position ko parseFloat se number mein convert karte hain.
+                const currentLeft = parseFloat(item.style.left);
+                // Positions array se current index ke liye target 'left' value lete hain.
+                const targetLeft = positions[index].left;
+                // Center position ke liye fixed x-coordinate define karte hain (700 pixels).
+                const centerX = 700;
+      
+                // Yeh check karta hai ki item center gap (700 ke aas paas) ko cross kar raha hai ya nahi.
+                const isCrossingGap = 
+                    (currentLeft < centerX && targetLeft > centerX) || 
+                    (currentLeft > centerX && targetLeft < centerX);
+      
+                // Agar item center gap cross kar raha hai, to special transition effect (fade out/in) apply karte hain.
+                if (isCrossingGap) {
+                    // Transition property set karte hain: opacity 2s ease-out, top 3s ease-out, left 2s ease-out.
+                    item.style.transition = 'opacity 2s ease-out, top 3s ease-out, left 2s ease-out';
+                    // Fade out ke liye opacity ko 0 set karte hain.
+                    item.style.opacity = "0";
+                    
+                    // 500 milliseconds ke baad, nayi position set karne ke liye timeout function use karte hain.
+                    setTimeout(() => {
+                        // Transition ko temporarily disable kar dete hain (none).
+                        item.style.transition = 'none';
+                        // Nayi top position set karte hain.
+                        item.style.top = positions[index].top + "px";
+                        // Nayi left position set karte hain.
+                        item.style.left = positions[index].left + "px";
+                        // 100 milliseconds ke baad fade-in effect apply karne ke liye timeout function use karte hain.
+                        setTimeout(() => {
+                            // Opacity ko fade in karne ke liye transition set karte hain: 3s ease-in.
+                            item.style.transition = 'opacity 3s ease-in';
+                            // Opacity ko 1 set kar dete hain, jisse item dikhai dene lage.
+                            item.style.opacity = "1";
+                        }, 100);
+                    }, 500);
+                } else {
+                    // Agar item gap cross nahi kar raha, toh regular transition apply karte hain.
+                    item.style.transition = 'top 3s ease-out, left 3s ease-out, opacity 3s ease-in-out';
+                    // Item ki opacity ko ensure karte hain ki 1 (fully visible) rahe.
+                    item.style.opacity = "1";
+                    // Nayi top position set karte hain.
+                    item.style.top = positions[index].top + "px";
+                    // Nayi left position set karte hain.
+                    item.style.left = positions[index].left + "px";
+                }
+            });
+      
+            // 1000 milliseconds (1 second) ke baad, rotation complete hone ka signal dete hain.
+            setTimeout(() => {
+                // Rotation complete hone ke baad flag ko false set kar dete hain.
+                rotationInProgress = false;
+                // Agar rotation manual (click se) nahi hua, toh center item ko expand karne ke liye check karte hain.
+                if (!manualRotation) {
+                    checkCenterItemExpansion();
+                }
+            }, 1000);
+        }
+      
+        // Yeh function items ko anti-clockwise (ghadi ki sui ke vipreet disha mein) rotate karta hai.
+        function rotateItemsAntiClockwise() {
+            // Agar abhi koi rotation chal raha hai, toh function ko exit kar dete hain.
+            if (rotationInProgress) return;
+            // Ab rotation in-progress flag ko true set kar dete hain.
+            rotationInProgress = true;
+      
+            // Positions array ka pehla element nikaalte hain (shift se) aur use 'firstPosition' variable mein store karte hain.
+            const firstPosition = positions.shift();
+            // Ab is first position ko array ke ant mein add kar dete hain.
+            positions.push(firstPosition);
+      
+            // Sabhi items par loop chala ke nayi positions apply karte hain.
+            items.forEach((item, index) => {
+                // Har item ke current 'left' position ko number mein convert karte hain.
+                const currentLeft = parseFloat(item.style.left);
+                // Positions array se target 'left' value lete hain.
+                const targetLeft = positions[index].left;
+                // Center ke liye fixed x-coordinate define karte hain (700 pixels).
+                const centerX = 700;
+      
+                // Check karte hain ki item center gap (700 ke aas paas) ko cross kar raha hai ya nahi.
+                const isCrossingGap = 
+                    (currentLeft < centerX && targetLeft > centerX) || 
+                    (currentLeft > centerX && targetLeft < centerX);
+      
+                // Agar item center gap cross kar raha hai, to fade out/in transition apply karte hain.
+                if (isCrossingGap) {
+                    // Transition set karte hain: opacity 2s ease-out, top 3s ease-out, left 2s ease-out.
+                    item.style.transition = 'opacity 2s ease-out, top 3s ease-out, left 2s ease-out';
+                    // Opacity ko 0 set karte hain, jisse item fade out ho jata hai.
+                    item.style.opacity = "0";
+                    
+                    // 500 milliseconds ke baad nayi position set karne ke liye callback function.
+                    setTimeout(() => {
+                        // Transition ko temporarily disable kar dete hain.
+                        item.style.transition = 'none';
+                        // Nayi top position set karte hain.
+                        item.style.top = positions[index].top + "px";
+                        // Nayi left position set karte hain.
+                        item.style.left = positions[index].left + "px";
+                        // 100 milliseconds ke baad fade in effect apply karte hain.
+                        setTimeout(() => {
+                            // Transition set karte hain opacity ke liye: 3s ease-in.
+                            item.style.transition = 'opacity 3s ease-in';
+                            // Opacity ko wapas 1 set kar dete hain.
+                            item.style.opacity = "1";
+                        }, 100);
+                    }, 500);
+                } else {
+                    // Agar item center gap cross nahi kar raha, to normal transition apply karte hain.
+                    item.style.transition = 'top 3s ease-out, left 3s ease-out, opacity 3s ease-in-out';
+                    // Ensure karte hain ki opacity 1 hi rahe.
+                    item.style.opacity = "1";
+                    // Nayi top position set karte hain.
+                    item.style.top = positions[index].top + "px";
+                    // Nayi left position set karte hain.
+                    item.style.left = positions[index].left + "px";
+                }
+            });
+      
+            // 400 milliseconds ke baad rotation complete hone ka signal dete hain.
+            setTimeout(() => {
+                // Rotation in-progress flag ko false set kar dete hain.
+                rotationInProgress = false;
+                // Agar manual rotation nahi ho raha, toh center item expansion ko check karte hain.
+                if (!manualRotation) {
+                    checkCenterItemExpansion();
+                }
+            }, 400);
+        }
+      
+        // Yeh function kisi clicked item ko expand (bada) karne ke liye hai.
+        function expandItem(item) {
+            // Sabhi items se "expand" class remove karte hain, taki pehle se koi expanded state na ho.
+            items.forEach(el => el.classList.remove("expand"));
+            
+            // Clicked item ko selectedItem variable mein store karte hain.
+            selectedItem = item;
+      
+            // Clicked item mein "expand" class add karte hain, jo CSS ke through expansion effect trigger karegi.
+            item.classList.add("expand");
+      
+            // Smooth expansion ke liye sabhi properties par transition set karte hain (3 seconds duration, ease-out effect).
+            item.style.transition = 'all 1s ease-out';
+      
+            // 1000 milliseconds ke baad, expansion effect ko wapas normal state mein lane ke liye setTimeout use karte hain.
+            setTimeout(() => {
+                // Ab transition ko ease-in effect mein set kar dete hain.
+                item.style.transition = 'all 6s ease-in';
+                // "expand" class ko remove kar dete hain taki item apne normal size mein aa jaye.
+                item.classList.remove("expand");
+            }, 800);
+        }
+      
+        // Yeh function check karta hai ki center mein maujood item (jiska left 700 hai) ko automatically expand karna hai ya nahi.
+        function checkCenterItemExpansion() {
+            // Agar manual rotation chal raha hai, toh auto expansion nahi karte.
+            if (manualRotation) return;
+            // Array se center item ko dhoondte hain jiska left position exactly 700 hai.
+            const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+            // Agar center item exist karta hai aur vo abhi selectedItem nahi hai, toh usse expand kar dete hain.
+            if (centerItem && centerItem !== selectedItem) {
+                expandItem(centerItem);
+            }
+        }
+      
+        // Yeh function auto-rotation start karta hai jo fixed interval par items ko rotate karta hai.
+        function startAutoRotate() {
+            // Kisi bhi existing auto-rotation interval ko clear kar dete hain, taaki duplicate intervals na chalain.
+            clearInterval(autoRotateInterval);
+            // Manual rotation flag ko false set karte hain kyunki ab auto rotation active hai.
+            manualRotation = false;
+            // setInterval use karke har 3000 milliseconds (3 seconds) mein items ko clockwise rotate karte hain.
+            autoRotateInterval = setInterval(() => {
+                // Agar abhi koi rotation in-progress nahi hai, tab hi rotation call karte hain.
+                if (!rotationInProgress) {
+                    rotateItemsClockwise();
+                }
+            }, 3000);
+        }
+      
+        // Yeh function clicked item ko center mein laane ke liye rotate karta hai, aur phir usko expand karta hai.
+        function rotateToItemAndExpand(clickedItem) {
+            // Auto-rotation ko turant rok dete hain kyunki ab manual rotation trigger hua hai.
+            clearInterval(autoRotateInterval);
+            // Manual rotation flag ko true set kar dete hain.
+            manualRotation = true;
+      
+            // Sabhi items se "expand" class remove kar dete hain, taki koi bhi pehle se expanded na ho.
+            items.forEach(el => el.classList.remove("expand"));
+      
+            // Yeh helper (recursive) function tab tak call hota rahega jab tak clicked item center (left:700) mein nahi aa jata.
+            function rotateUntilCenter() {
+                // Sabhi items me se center item ko dhoondte hain jiska left position 700 hai.
+                const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+                // Clicked item ka index nikalte hain.
+                const clickedIndex = Array.from(items).indexOf(clickedItem);
+                // Positions array se clicked item ka left value lete hain.
+                const clickedLeft = positions[clickedIndex].left;
+                // Center ke liye fixed x-coordinate (700) define karte hain.
+                const centerX = 700;
+      
+                // Agar clicked item abhi center mein aa chuka hai...
+                if (centerItem === clickedItem) {
+                    // Toh clicked item ko expand karte hain.
+                    expandItem(clickedItem);
+                    // Manual rotation complete ho chuka hai, isliye flag ko false set kar dete hain.
+                    manualRotation = false;
+                } else {
+                    // Agar clicked item center se left mein hai, toh anti-clockwise rotation call karte hain.
+                    if (clickedLeft < centerX) {
+                        rotateItemsAntiClockwise();
+                    } else {
+                        // Agar clicked item center se right mein hai, toh clockwise rotation call karte hain.
+                        rotateItemsClockwise();
+                    }
+      
+                    // 2000 milliseconds (2 seconds) ke baad fir se check karne ke liye rotateUntilCenter() function call karte hain.
+                    setTimeout(rotateUntilCenter, 2000);
+                }
+            }
+      
+            // Recursive rotation function ko shuru kar dete hain taki clicked item center mein aajaye.
+            rotateUntilCenter();
+            // Manual rotation ke baad 5000 milliseconds (5 seconds) ke delay se auto-rotation ko restart kar dete hain.
+            setTimeout(startAutoRotate, 5000);
+        }
+      
+        // Sabhi items par click event listener add karte hain.
+        // Jab bhi koi item click hoga, rotateToItemAndExpand() function call hoga jo clicked item ko center mein laayega aur expand karega.
+        items.forEach((item) => {
+            item.addEventListener("click", () => rotateToItemAndExpand(item));
+        });
+      
+        // Page load hone ke baad auto-rotation ko start kar dete hain.
+        startAutoRotate();
+      </script>
+      
 
 </body>
 </html>
