@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Define the character encoding for the document -->
+    <meta charset="UTF-8">
+    
+    <!-- Ensure the page is responsive and scales correctly on different devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Title of the page -->
+    <title>Rotational Animation with Expand</title>
+    
+    <!-- Linking external Font Awesome CSS for icons (if needed) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Styling for the main slider container */
+        .slider {
+            display: flex; /* Use flexbox layout */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            height: 100vh; /* Set the container height to full viewport height */
+            margin: 0; /* Remove margin */
+            overflow: hidden; /* Hide any overflowing content */
+            background-image: url('img/Final2.png'); /* Set background image */
+            background-size: cover; /* Ensure the background covers the full area */
+            background-position: center center; /* Center the background image */
+            background-repeat: no-repeat; /* Prevent repeating the background image */
+        }
+
+        /* Styling for each item within the slider */
+        .item {
+            position: absolute; /* Position items absolutely within the container */
+            width: 200px; /* Set width of each item */
+            height: 60px; /* Set height of each item */
+            background-color: #dcdcff; /* Background color of the item */
+            display: flex; /* Use flexbox for internal alignment */
+            justify-content: center; /* Center text horizontally */
+            align-items: center; /* Center text vertically */
+            cursor: pointer; /* Show pointer cursor on hover */
+            transition: all 0.6s ease-out; /* Smooth transition for changes */
+            text-align: center; /* Center text */
+            font-size: 14px; /* Set font size */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Light shadow for better contrast */
+        }
+
+        /* Expanding effect for the item */
+        .item.expand {
+            width: 220px; /* Increase width when expanded */
+            height: 200px; /* Increase height when expanded */
+            font-size: 16px; /* Larger font size when expanded */
+            font-weight: bold; /* Bold text when expanded */
+            background-color: #ffffff; /* Change background color to white */
+            border: 2px solid black; /* Add black border */
+            transition: all 2s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth cubic bezier transition for expansion */
+        }
+
+        /* Smooth fade-out effect */
+        .fade-out {
+            opacity: 0; /* Set opacity to 0 for fade-out */
+            transition: opacity 0.5s ease-out; /* Smooth fade-out transition */
+        }
+
+        /* Smooth fade-in effect */
+        .fade-in {
+            opacity: 1; /* Set opacity to 1 for fade-in */
+            transition: opacity 0.5s ease-in; /* Smooth fade-in transition */
+        }
+
+        /* Styling for the dotted circle */
+        .dotted-circle {
+            width: 1200px; /* Set width of the circle */
+            height: 750px; /* Set height of the circle */
+            border: 2px dotted #000; /* Dotted border */
+            border-radius: 50%; /* Circular shape */
+            display: flex; /* Use flexbox for internal alignment */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            margin-top: -300px; /* Position the circle towards the top */
+            position: absolute; /* Position the circle absolutely within the container */
+            transition: all 1s ease-in-out; /* Smooth transition for any changes */
+        }
+
+        /* Container with 3D perspective */
+        .container {
+            width: 1700px; /* Set width of the container */
+            height: 600px; /* Set height of the container */
+            perspective: 1200px; /* Apply 3D perspective effect */
+            transition: all 0.6s ease-in-out; /* Smooth transition for container changes */
+            text-align: center; align-content: center; justify-content: center; align-items: center;
+        }
+
+        /* Title styling */
+        .title {
+            font-size: 34px; /* Set font size */
+            font-weight: bold; /* Bold text */
+            color: #333; /* Text color */
+        }
+
+        /* Highlighted text style */
+        .highlight {
+            color: #6A5ACD; /* Set color for highlighted text */
+        }
+
+        /* Additional styling for the dotted-circle */
+        .dotted-circle {
+            width: 1200px; /* Set width of the circle */
+            height: 750px; /* Set height of the circle */
+            border: 2px dotted #000; /* Dotted border */
+            border-end-end-radius: 50%; /* Apply rounded corners */
+            border-end-start-radius: 50%; /* Apply rounded corners */
+            border-left: 200px; /* Apply left border */
+            border-right: 200px; /* Apply right border */
+            border-top: none; /* Remove top border */
+            display: flex; /* Use flexbox for internal alignment */
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            margin-top: -300px; /* Position circle towards the top */
+            position: absolute; /* Absolute positioning */
+        }
+    </style>
+</head>
+<body>
+    <!-- Main slider container with the dotted circle and items -->
+    <div class="slider">
+        <div class="dotted-circle"></div> <!-- Dotted circle element -->
+
+        <!-- Container for the title and items -->
+        <div class="container">
+            <div class="title">Your Guide To <span class="highlight">Selling Globally On Amazon</span></div> <!-- Title -->
+
+            <!-- Image for Amazon Global Selling -->
+            <img src="img/imazon.png" style="text-align: center; align-content: center; justify-content: center; align-items: center;" alt="Amazon Global Selling" width="200">
+
+            <!-- List of items, each with a different label -->
+            <div class="item" data-index="0">Instant e-FIRA</div>
+            <div class="item" data-index="1">Faster Payments</div>
+            <div class="item" data-index="2">Multi Currency Account</div>
+            <div class="item" data-index="3">Quick Onboarding</div>
+            <div class="item" data-index="4">Tax and Compliance Support</div>
+            <div class="item" data-index="5">Marketing</div>
+            <div class="item" data-index="6">Setup</div>
+            <div class="item" data-index="7">Logistics</div>
+            <div class="item" data-index="8">Help</div>
+        </div>
+    </div>
+
+    <script>
+        const items = document.querySelectorAll(".item");
+        let rotationInProgress = false;
+        let positions;
+        let selectedItem = null;
+        let autoRotateInterval;
+        let manualRotation = false;
+        const rotationSpeedFactor = 1.5; // Factor to increase rotation speed 
+    
+        function setPositions() {
+            positions = [
+                { top: 120, left: 140 },
+                { top: 240, left: 180 },
+                { top: 350, left: 250 },
+                { top: 450, left: 400 },
+                { top: 510, left: 700 },
+                { top: 450, left: 1000 },
+                { top: 350, left: 1150 },
+                { top: 240, left: 1300 },
+                { top: 120, left: 1350 }
+            ];
+        }
+    
+        setPositions();
+    
+        function applyPositions() {
+            items.forEach((item, index) => {
+                item.style.top = positions[index].top + "px";
+                item.style.left = positions[index].left + "px";
+            });
+        }
+    
+        applyPositions();
+    
+        function rotateItemsClockwise() {
+            if (rotationInProgress) return;
+            rotationInProgress = true;
+    
+            const lastPosition = positions.pop();
+            positions.unshift(lastPosition);
+    
+            items.forEach((item, index) => {
+                const currentLeft = parseFloat(item.style.left);
+                const targetLeft = positions[index].left;
+                const centerX = 700;
+    
+                const isCrossingGap =
+                    (currentLeft < centerX && targetLeft > centerX) ||
+                    (currentLeft > centerX && targetLeft < centerX);
+    
+                const transitionTime = 3 / rotationSpeedFactor; // Reduced transiti0.5time
+    
+                if (isCrossingGap) {
+                    item.style.transition = `opacity ${transitionTime}s ease-out, top ${transitionTime + 0.5}s ease-out, left ${transitionTime}s ease-out`;
+                    item.style.opacity = "0";
+    
+                    setTimeout(() => {
+                        item.style.transition = 'none';
+                        item.style.top = positions[index].top + "px";
+                        item.style.left = positions[index].left + "px";
+    
+                        setTimeout(() => {
+                            item.style.transition = `opacity ${transitionTime}s ease-in`;
+                            item.style.opacity = "1";
+                        }, 100);
+                    }, 500);
+                } else {
+                    item.style.transition = `top ${transitionTime}s ease-out, left ${transitionTime}s ease-out, opacity ${transitionTime}s ease-in-out`;
+                    item.style.opacity = "1";
+                    item.style.top = positions[index].top + "px";
+                    item.style.left = positions[index].left + "px";
+                }
+            });
+    
+            setTimeout(() => {
+                rotationInProgress = false;
+                if (!manualRotation) {
+                    checkCenterItemExpansion();
+                }
+            }, 1000 / rotationSpeedFactor); // Adjusted for faster completion
+        }
+    
+        function rotateItemsAntiClockwise() {
+            if (rotationInProgress) return;
+            rotationInProgress = true;
+    
+            const firstPosition = positions.shift();
+            positions.push(firstPosition);
+    
+            items.forEach((item, index) => {
+                const currentLeft = parseFloat(item.style.left);
+                const targetLeft = positions[index].left;
+                const centerX = 700;
+    
+                const isCrossingGap =
+                    (currentLeft < centerX && targetLeft > centerX) ||
+                    (currentLeft > centerX && targetLeft < centerX);
+    
+                const transitionTime = 3 / rotationSpeedFactor; // Reduced transition time
+    
+                if (isCrossingGap) {
+                    item.style.transition = `opacity ${transitionTime}s ease-out, top ${transitionTime + 0.5}s ease-out, left ${transitionTime}s ease-out`;
+                    item.style.opacity = "0";
+    
+                    setTimeout(() => {
+                        item.style.transition = 'none';
+                        item.style.top = positions[index].top + "px";
+                        item.style.left = positions[index].left + "px";
+    
+                        setTimeout(() => {
+                            item.style.transition = `opacity ${transitionTime}s ease-in`;
+                            item.style.opacity = "1";
+                        }, 100);
+                    }, 500);
+                } else {
+                    item.style.transition = `top ${transitionTime}s ease-out, left ${transitionTime}s ease-out, opacity ${transitionTime}s ease-in-out`;
+                    item.style.opacity = "1";
+                    item.style.top = positions[index].top + "px";
+                    item.style.left = positions[index].left + "px";
+                }
+            });
+    
+            setTimeout(() => {
+                rotationInProgress = false;
+                if (!manualRotation) {
+                    checkCenterItemExpansion();
+                }
+            }, 1000 / rotationSpeedFactor); // Adjusted for faster completion
+        }
+    
+        function expandItem(item) {
+            items.forEach(el => el.classList.remove("expand"));
+            selectedItem = item;
+            item.classList.add("expand");
+            item.style.transition = `all ${1 / rotationSpeedFactor}s ease-out`; // Speed up expansion
+    
+            setTimeout(() => {
+                item.style.transition = `all ${6 / rotationSpeedFactor}s ease-in`; // Speed up return to normal size
+                item.classList.remove("expand");
+            }, 800);
+        }
+    
+        function checkCenterItemExpansion() {
+            if (manualRotation) return;
+            const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+            if (centerItem && centerItem !== selectedItem) {
+                expandItem(centerItem);
+            }
+        }
+    
+        function startAutoRotate() {
+            clearInterval(autoRotateInterval);
+            manualRotation = false;
+            autoRotateInterval = setInterval(() => {
+                if (!rotationInProgress) {
+                    rotateItemsClockwise();
+                }
+            }, 3000 / rotationSpeedFactor); // Speed up auto-rotation interval
+        }
+    
+        function rotateToItemAndExpand(clickedItem) {
+            clearInterval(autoRotateInterval);
+            manualRotation = true;
+    
+            items.forEach(el => el.classList.remove("expand"));
+    
+            function rotateUntilCenter() {
+                const centerItem = Array.from(items).find((_, index) => positions[index].left === 700);
+                const clickedIndex = Array.from(items).indexOf(clickedItem);
+                const clickedLeft = positions[clickedIndex].left;
+                const centerX = 700;
+    
+                if (centerItem === clickedItem) {
+                    expandItem(clickedItem);
+                    manualRotation = false;
+                } else {
+                    if (clickedLeft < centerX) {
+                        rotateItemsAntiClockwise();
+                    } else {
+                        rotateItemsClockwise();
+                    }
+    
+                    setTimeout(rotateUntilCenter, 2000 / rotationSpeedFactor); // Speed up rotation steps
+                }
+            }
+    
+            rotateUntilCenter();
+            setTimeout(startAutoRotate, 5000); // Speed up the delay before restarting auto-rotation
+        }
+    
+        items.forEach((item) => {
+            item.addEventListener("click", () => rotateToItemAndExpand(item));
+        });
+    
+        startAutoRotate();
+    </script>
+    
+    
+
+</body>
+</html>
