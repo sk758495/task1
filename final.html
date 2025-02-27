@@ -58,7 +58,7 @@
 
     /* Styling for the dotted circle */
     .dotted-circle {
-      width: 1200px; /* Set width of the circle */
+      width: 100%; /* Set width of the circle */
       height: 750px; /* Set height of the circle */
       border: 2px dotted #000; /* Dotted border */
       border-radius: 50%; /* Circular shape */
@@ -96,7 +96,7 @@
 
     /* Additional styling for the dotted-circle */
     .dotted-circle {
-      width: 1200px; /* Set width of the circle */
+      width: 100%; /* Set width of the circle */
       height: 750px; /* Set height of the circle */
       border: 2px dotted #000; /* Dotted border */
       border-end-end-radius: 50%; /* Apply rounded corners */
@@ -237,45 +237,67 @@
 
     // setPositions() defines positions based on screen width.
     // Desktop positions remain unchanged while mobile positions are updated.
-    function setPositions() {
-      if (window.innerWidth <= 768) {
-        // Mobile positions with center element set at left:150 (container width is 300px)
-        positions = [
-          { top: 210, left: 20 },
-          { top: 270, left: 0 },
-          { top: 340, left: 0 },
-          { top: 380, left: 80 },
-          { top: 340, left: 150 }, // Center element for mobile
-          { top: 270, left: 220 },
-          { top: 210, left: 220 },
-          { top: 150, left: 160 },
-          { top: 150, left: 60 }
-        ];
-      } else {
-        // Desktop positions (unchanged)
-        positions = [
-          { top: 120, left: 140 },
-          { top: 240, left: 180 },
-          { top: 350, left: 250 },
-          { top: 450, left: 400 },
-          { top: 510, left: 700 },   // Center element for desktop
-          { top: 450, left: 1000 },
-          { top: 350, left: 1150 },
-          { top: 240, left: 1300 },
-          { top: 120, left: 1350 }
-        ];
-      }
+    const dottedCircle = document.querySelector('.dotted-circle'); // Select the dotted circle
+
+
+function setPositions() {
+  if (window.innerWidth <= 768) {
+    // Mobile positions
+    positions = [
+      { top: 210, left: 20 },
+      { top: 270, left: 0 },
+      { top: 340, left: 0 },
+      { top: 380, left: 80 },
+      { top: 340, left: 150 }, // Center element for mobile
+      { top: 270, left: 220 },
+      { top: 210, left: 220 },
+      { top: 150, left: 160 },
+      { top: 150, left: 60 }
+    ];
+
+    // Update the circle for mobile
+    dottedCircle.style.width = "300px";
+    dottedCircle.style.height = "300px";
+    dottedCircle.style.marginTop = "180px"; // Adjust position
+  } else {
+    // Desktop positions
+    positions = [
+      { top: 120, left: 140 },
+      { top: 240, left: 180 },
+      { top: 350, left: 250 },
+      { top: 450, left: 400 },
+      { top: 510, left: 700 },   // Center element for desktop
+      { top: 450, left: 1000 },
+      { top: 350, left: 1150 },
+      { top: 240, left: 1300 },
+      { top: 120, left: 1350 }
+    ];
+
+    // Update the circle for desktop
+    dottedCircle.style.width = "1000px";
+    dottedCircle.style.height = "700px";
+    dottedCircle.style.marginTop = "-250px"; // Adjust position
+  }
+
+  applyPositions(); // Apply the new positions
+}
+
+function applyPositions() {
+  items.forEach((item, index) => {
+    if (positions[index]) {
+      item.style.position = "absolute";
+      item.style.top = positions[index].top + "px";
+      item.style.left = positions[index].left + "px";
     }
-    
-    setPositions();
-    
-    // applyPositions() applies the position values to each item.
-    function applyPositions() {
-      items.forEach((item, index) => {
-        item.style.top = positions[index].top + "px";
-        item.style.left = positions[index].left + "px";
-      });
-    }
+  });
+}
+
+// Initialize positions
+setPositions();
+
+// Update positions and circle size when window resizes
+window.addEventListener("resize", setPositions);
+
     
     applyPositions();
     
